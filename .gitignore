@@ -1,0 +1,68 @@
+# ---- R & RStudio ----
+.Rproj.user/
+.Rhistory
+.RData
+.Ruserdata
+.Rapp.history
+.Rprofile
+.Rproj*
+
+# ---- R temporary files ----
+*.RData
+*.Rhistory
+*.Rout
+*.Rout.save
+*.Rout.fail
+*.Rcheck/
+*.Rtmp/
+*.Rbak
+*~
+
+# ---- Data (raw and processed) ----
+data/raw/
+data/processed/
+data/interim/
+data/temp/
+*.rds
+*.RDS
+*.csv
+*.tsv
+*.zip
+*.gz
+*.tar
+*.tar.gz
+*.xz
+*.bz2
+
+# ---- Cache and logs ----
+.cache/
+__pycache__/
+.DS_Store
+*.log
+
+# ---- Shiny app build outputs ----
+app/.Rhistory
+app/.RData
+app/.Rproj.user/
+app/www/
+app/cache/
+app/output/
+app/logs/
+app/*.rds
+
+# ---- Markdown / Quarto intermediates ----
+*_cache/
+*.utf8.md
+*.knit.md
+*.nb.html
+*.html
+*.pdf
+
+# ---- OS / Editor specific ----
+Thumbs.db
+*.swp
+*.swo
+*.tmp
+*.bak
+.idea/
+.vscode/
