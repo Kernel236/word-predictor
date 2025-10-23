@@ -1,6 +1,11 @@
+library(here)
 library(dplyr)
+library(tidyr)
+library(readr)
 library(stringr)
 library(tidytext)
+library(ggplot2)
+library(scales)
 
 
 #' Load the SwiftKey text corpus for a given language
@@ -63,31 +68,49 @@ load_corpus <- function(lang = "en_US", base_dir = "data/raw") {
   # Return tidy corpus
   return(corpus)
 }
-# 
-# set.seed(123)
-# sample_frac <- 0.10
-# 
-# blogs_s   <- sample(blogs,   size = floor(length(blogs) * sample_frac))
-# news_s    <- sample(news,    size = floor(length(news) * sample_frac))
-# twitter_s <- sample(twitter, size = floor(length(twitter) * sample_frac))
-# 
-# corpus_raw <- tibble(
-#   text   = c(blogs_s, news_s, twitter_s),
-#   source = c(rep("blogs", length(blogs_s)),
-#              rep("news", length(news_s)),
-#              rep("twitter", length(twitter_s)))
-# )
-# #remove corpus 
+
+#' Sample the corpus by source (blogs/news/twitter)
+#'
+#' @param corpus Tibble with columns `source` and `text`
+#' @param prop Proportion to sample within each source (e.g., 0.05). Use either `prop` OR `n_per_source`.
+#' @param n_per_source Integer number of lines to sample within each source (e.g., 50_000).
+#' @param seed RNG seed for reproducibility.
+#' @param min_chars Drop lines with fewer than this many characters before sampling.
+#' @return Tibble sampled, same columns as input.
+#' @examples
+#' small <- sample_corpus(corpus, prop = 0.05, seed = 123)
+#' tiny  <- sample_corpus(corpus, n_per_source = 20000, seed = 42)
+sample_corpus <- function(corpus, prop = NULL, n_per_source = NULL, seed = 123, min_chars = 1) {
+  stopifnot("source" %in% names(corpus), "text" %in% names(corpus))
+  if (is.null(prop) == is.null(n_per_source)) {
+    stop("Provide exactly one of `prop` or `n_per_source`.")
+  }
+  set.seed(seed)
+  
+  out <- corpus |>
+    dplyr::filter(!is.na(text), nchar(text) >= min_chars) |>
+    dplyr::group_by(source)
+  
+  out <- if (!is.null(prop)) {
+    dplyr::slice_sample(out, prop = prop)
+  } else {
+    dplyr::slice_sample(out, n = n_per_source)
+  }
+  
+  dplyr::ungroup(out)
+}
+
+
 
 clean_text <- function(x, keep_hashtag_word = TRUE) {
-  x %>%
+  x |>
     str_to_lower() |>
     # url
     str_replace_all("https?://\\S+|www\\.\\S+", " ") |>
     # @mentions
     str_replace_all("@\\w+", " ") |>
     # hashtag: o rimuovi del tutto, o togli il # ma tieni la parola
-    { if (keep_hashtag_word) str_replace_all(., "#(\\w+)", "\\1") else str_replace_all(., "#\\w+", " ") } |>
+    str_replace_all("#\\w+", " ")  |>
     # rimuovi caratteri non ASCII (emoji ecc.)
     str_replace_all("[^\\x01-\\x7F]", " ") |>
     # tieni lettere, apostrofi e spazi; togli il resto (numeri, altra punteggiatura)
@@ -96,9 +119,6 @@ clean_text <- function(x, keep_hashtag_word = TRUE) {
     str_replace_all("\\s+", " ") |>
     str_trim()
 }
-
-corpus <- corpus_raw %>%
-  mutate(text_clean = clean_text(text))
 
 #' Tokenize corpus into individual words (unigrams)
 #'
@@ -251,3 +271,133 @@ coverage_from_freq <- function(freq_tbl, p_col = "p", thresholds = c(0.5, 0.9), 
     summary = sum_tbl
   )
 }
+
+#' Plot cumulative coverage curve
+#' @param freq_tbl Tabella di frequenze con colonna p e (word|term / w1..wn)
+#' @param p_col Nome colonna con la frequenza relativa
+#' @param name_col Colonna del termine; se assente e ci sono w1..wn, verrà creata "term"
+plot_cumulative_coverage <- function(freq_tbl, p_col = "p", name_col = "word") {
+  cov <- coverage_from_freq(freq_tbl, p_col = p_col, thresholds = numeric(), name_col = name_col)
+  ggplot2::ggplot(cov$cum_tbl, ggplot2::aes(x = rank, y = cum_p)) +
+    ggplot2::geom_line() +
+    ggplot2::labs(
+      x = "Unique terms included (rank)",
+      y = "Cumulative coverage",
+      title = "Cumulative coverage curve"
+    ) +
+    ggplot2::scale_y_continuous(labels = scales::percent) +
+    ggplot2::theme_minimal()
+}
+
+#' Plot top-k terms by frequency
+#' @param freq_tbl Tabella con (word|term) e n
+#' @param top Numero di termini da mostrare
+plot_top_terms <- function(freq_tbl, top = 20, name_col = "word") {
+  tbl <- freq_tbl
+  if (!name_col %in% names(tbl)) {
+    w_cols <- grep("^w\\d+$", names(tbl), value = TRUE)
+    if (length(w_cols) == 0) stop("No term column found (word/term or w1..wn).")
+    tbl <- tbl |>
+      tidyr::unite(col = "term", dplyr::all_of(w_cols), sep = " ", remove = FALSE)
+    name_col <- "term"
+  }
+  tbl |>
+    dplyr::slice_head(n = top) |>
+    ggplot2::ggplot(ggplot2::aes(x = reorder(.data[[name_col]], n), y = n)) +
+    ggplot2::geom_col() +
+    ggplot2::coord_flip() +
+    ggplot2::labs(x = NULL, y = "Count", title = paste("Top", top, "terms")) +
+    ggplot2::theme_minimal()
+}
+
+#' Plot rank-frequency (Zipf-like) for top N terms
+#' @param freq_tbl Tabella di frequenze con p
+#' @param top Quanti termini considerare in testa
+plot_rank_frequency <- function(freq_tbl, top = 5000, name_col = "word", p_col = "p") {
+  tbl <- freq_tbl
+  if (!name_col %in% names(tbl)) {
+    w_cols <- grep("^w\\d+$", names(tbl), value = TRUE)
+    if (length(w_cols) == 0) stop("No term column found (word/term or w1..wn).")
+    tbl <- tbl |>
+      tidyr::unite(col = "term", dplyr::all_of(w_cols), sep = " ", remove = FALSE)
+    name_col <- "term"
+  }
+  tbl <- tbl |>
+    dplyr::arrange(dplyr::desc(.data[[p_col]])) |>
+    dplyr::mutate(rank = dplyr::row_number()) |>
+    dplyr::slice_head(n = top)
+  
+  ggplot2::ggplot(tbl, ggplot2::aes(x = rank, y = .data[[p_col]])) +
+    ggplot2::geom_line() +
+    ggplot2::scale_y_log10() +
+    ggplot2::scale_x_log10() +
+    ggplot2::labs(
+      x = "Rank (log scale)",
+      y = "Frequency (log scale)",
+      title = paste("Rank–frequency (top", top, ")")
+    ) +
+    ggplot2::theme_minimal()
+}
+
+
+
+corpus_raw <- load_corpus("en_US", base_dir = "data/raw")
+
+corpus <- corpus_raw %>%
+  mutate(text_clean = clean_text(text))
+
+# sanity check
+corpus %>% count(source)
+
+set.seed(123)
+small <- sample_corpus(corpus, prop = 0.10, min_chars = 5)
+small %>% count(source)
+rm(corpus_raw); gc()
+
+
+
+# tokenizza sul TESTO PULITO
+uni <- tokenize_unigrams(small, text_col = "text_clean")
+
+freq_uni <- freq_unigrams(uni)              # word, n, p
+
+# coverage 50% / 90%
+cov_uni <- coverage_from_freq(freq_uni, thresholds = c(0.5, 0.9), name_col = "word")
+cov_uni$summary     # ← tabella con n_unique per 50% e 90%
+
+# grafici
+plot_cumulative_coverage(freq_uni, name_col = "word")
+plot_top_terms(freq_uni, top = 25, name_col = "word")
+plot_rank_frequency(freq_uni, top = 10000, name_col = "word")
+
+rm(uni); gc()
+
+
+bi <- tokenize_bigrams(small, text_col = "text_clean")
+
+freq_bi <- freq_bigrams(bi)                 # w1, w2, n, p
+
+cov_bi <- coverage_from_freq(freq_bi, thresholds = c(0.5, 0.9))
+cov_bi$summary
+
+plot_cumulative_coverage(freq_bi)           # costruisce "term" da w1 w2
+plot_top_terms(freq_bi, top = 25)           # idem
+
+rm(bi); gc()
+
+
+tri <- tokenize_trigrams(small, text_col = "text_clean")
+
+freq_tri <- freq_trigrams(tri)              # w1, w2, w3, n, p
+
+cov_tri <- coverage_from_freq(freq_tri, thresholds = c(0.5, 0.9))
+cov_tri$summary
+
+plot_cumulative_coverage(freq_tri)
+plot_top_terms(freq_tri, top = 25)
+
+# pruning + save (i trigrammi esplodono: sii aggressivo)
+freq_tri_top <- prune_top_k(freq_tri, top_k = 150000)
+saveRDS(freq_tri_top, here("data/processed/freq_tri_top150k.rds"))
+
+rm(tri); gc()
