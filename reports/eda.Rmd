@@ -1,0 +1,225 @@
+---
+title: "Exploratory Data Analysis for Text Prediction Model"
+subtitle: "N-gram Frequency Analysis and Coverage Patterns"
+author: "Kernel236"
+date: "`r Sys.Date()`"
+output: 
+  html_document:
+    toc: true
+    toc_float: true
+    theme: flatly
+    code_folding: hide
+---
+
+```{r setup, echo=FALSE, include=FALSE}
+# Load required libraries for analysis and visualization
+library(here)        # Project-relative file paths
+library(Rcaptext)    # Custom text processing functions
+library(dplyr)       # Data manipulation
+library(tidyr)       # Data reshaping
+library(readr)       # File I/O
+library(stringr)     # String operations
+library(tidytext)    # Text mining utilities
+library(ggplot2)     # Data visualization
+library(scales)      # Plot scaling functions
+
+# Set global chunk options with caching enabled
+knitr::opts_chunk$set(
+  echo = TRUE, 
+  warning = FALSE, 
+  message = FALSE,
+  fig.width = 10,
+  fig.height = 6,
+  dpi = 150,
+  cache = TRUE,
+  cache.path = "cache/"
+)
+```
+
+# Executive Summary
+
+This report presents a comprehensive exploratory data analysis of the English US text corpus for building a next-word prediction model. The analysis examines unigram, bigram, and trigram frequency distributions to understand language patterns and inform model architecture decisions.
+
+> **Note**: This report uses caching to optimize knitting performance. Heavy computational chunks (data loading, tokenization, frequency analysis) are cached to avoid re-computation on subsequent runs. Cache files are stored in the `reports/cache/` directory.
+
+## Key Findings
+
+- **Zipf's Law**: All n-gram types follow power-law distributions typical of natural language
+- **Coverage Requirements**: Higher-order n-grams require exponentially more terms for equivalent coverage
+- **Sparsity Challenge**: Vocabulary size grows dramatically with n-gram order, requiring sophisticated smoothing strategies
+
+```{r data-preparation, include=FALSE, cache=TRUE, cache.lazy=FALSE}
+# Load and preprocess the English US corpus
+# This chunk is cached to avoid reloading large datasets on each knit
+corpus_raw <- load_corpus("en_US", base_dir = "data/raw")
+
+# Apply text cleaning and preprocessing
+corpus <- corpus_raw %>%
+  mutate(text_clean = clean_text(text))
+
+# Verify original corpus composition
+corpus_composition <- corpus %>% count(source, name = "documents")
+
+# Create reproducible sample for analysis (5% of corpus)
+set.seed(123)
+small <- sample_corpus(corpus, prop = 0.05, min_chars = 5)
+
+# Verify sample maintains source distribution
+sample_composition <- small %>% count(source, name = "documents")
+
+# Clean up memory
+rm(corpus_raw, corpus)
+gc()
+```
+
+## Corpus Overview
+
+The analysis is based on a stratified 5% sample of the English US corpus, maintaining proportional representation across all source types:
+
+```{r corpus-stats}
+print("Sample corpus composition:")
+knitr::kable(sample_composition, 
+             caption = "Document distribution in analysis sample",
+             col.names = c("Source", "Documents"))
+```
+
+# N-gram Frequency Analysis
+
+## Coverage Comparison Across N-gram Types
+The coverage analysis reveals the vocabulary size requirements for different levels of language coverage. This is crucial for determining model complexity and memory requirements.
+```{r coverage-analysis, cache=TRUE, dependson="data-preparation"}
+# Generate n-grams from the cleaned corpus sample
+# This chunk is cached to avoid re-tokenization on each knit
+uni <- tokenize_unigrams(small, text_col = "text_clean")   # Individual words
+bi  <- tokenize_bigrams(small,  text_col = "text_clean")   # Word pairs
+tri <- tokenize_trigrams(small, text_col = "text_clean")   # Word triplets
+
+# Calculate frequency distributions for each n-gram type
+freq_uni <- freq_unigrams(uni)    # Returns: word, n (count), p (probability)
+freq_bi  <- freq_bigrams(bi)      # Returns: combined word pair, n, p
+freq_tri <- freq_trigrams(tri)    # Returns: combined word triplet, n, p
+
+# Analyze coverage requirements at 50% and 90% thresholds
+cov_uni <- coverage_from_freq(freq_uni, thresholds = c(0.5, 0.9), name_col = "word")$summary |>
+  dplyr::mutate(type = "unigrams")
+cov_bi  <- coverage_from_freq(freq_bi,  thresholds = c(0.5, 0.9))$summary |>
+  dplyr::mutate(type = "bigrams")
+cov_tri <- coverage_from_freq(freq_tri, thresholds = c(0.5, 0.9))$summary |>
+  dplyr::mutate(type = "trigrams")
+
+# Create comparative coverage table
+coverage_table <- dplyr::bind_rows(cov_uni, cov_bi, cov_tri) |>
+  dplyr::select(type, threshold, n_unique) |>
+  tidyr::pivot_wider(names_from = threshold, values_from = n_unique, names_prefix = "cov_")
+
+# Display results with interpretation
+knitr::kable(coverage_table, 
+             caption = "Vocabulary size required for 50% and 90% coverage",
+             col.names = c("N-gram Type", "50% Coverage", "90% Coverage"),
+             format.args = list(big.mark = ","))
+```
+
+**Interpretation**: The exponential growth in vocabulary requirements demonstrates the curse of dimensionality in language modeling. While unigrams need relatively few terms for high coverage, trigrams require orders of magnitude more unique sequences, highlighting the need for effective smoothing and back-off strategies.
+
+# Unigram Analysis
+
+## Most Frequent Terms Distribution
+
+```{r unigram-top-terms, cache=TRUE, dependson="coverage-analysis", fig.cap="Top 25 most frequent unigrams showing dominance of function words"}
+plot_top_terms(freq_uni, top = 25, name_col = "word")
+```
+
+**Observation**: The distribution is dominated by stopwords (function words like "the", "of", "and"), which is expected in natural language. This confirms our unfiltered approach is appropriate for building a comprehensive language model that captures realistic usage patterns.
+
+## Zipf's Law Verification
+
+```{r unigram-zipf, cache=TRUE, dependson="coverage-analysis", fig.cap="Rank-frequency plot demonstrating Zipf's law in unigram distribution"}
+plot_rank_frequency(freq_uni, top = 10000, name_col = "word", p_col = "p")
+```
+
+**Analysis**: The approximately linear relationship in log-log scale confirms Zipf's law (s ≈ 1), indicating that the frequency of the nth most common word is inversely proportional to n. This power-law distribution is fundamental to natural language and validates our corpus preprocessing.
+
+## Cumulative Coverage Analysis
+
+```{r coverage-function, include=FALSE}
+# Define helper function for coverage plots with threshold annotations
+plot_cumulative_coverage_with_marks <- function(freq_tbl, p_col = "p", name_col = "word",
+                                                thresholds = c(0.5, 0.9)) {
+  cov <- coverage_from_freq(freq_tbl, p_col = p_col, thresholds = thresholds, name_col = name_col)
+  base <- plot_cumulative_coverage(freq_tbl, p_col = p_col, name_col = name_col)
+  threshold_data <- cov$summary
+  
+  base +
+    ggplot2::geom_vline(data = threshold_data, 
+                       ggplot2::aes(xintercept = n_unique), 
+                       linetype = 2, alpha = 0.7) +
+    ggplot2::geom_text(data = threshold_data,
+                      ggplot2::aes(x = n_unique, y = threshold, 
+                                  label = paste0(n_unique, " terms")),
+                      vjust = -0.5, size = 3)
+}
+```
+
+```{r unigram-coverage, cache=TRUE, dependson="coverage-analysis", fig.cap="Cumulative coverage curve showing vocabulary efficiency for unigrams"}
+plot_cumulative_coverage_with_marks(freq_uni, thresholds = c(0.5, 0.9))
+```
+
+**Insight**: The steep initial rise demonstrates that a small number of high-frequency words account for a large proportion of language use, supporting the 80-20 principle in linguistics. This suggests that efficient prediction models can be built with relatively compact vocabularies.
+
+# N-gram Analysis (Bigrams and Trigrams)
+
+## Most Frequent Bigrams
+
+```{r bigram-top-terms, cache=TRUE, dependson="coverage-analysis", fig.cap="Top 25 bigrams revealing common word combinations and phrases"}
+plot_top_terms(freq_bi, top = 25, name_col = "word")
+```
+
+**Observation**: Bigrams capture meaningful word pairs including common phrases ("of the", "in the") and collocations. These patterns are essential for context-aware prediction and demonstrate the value of considering word sequence dependencies.
+
+## Most Frequent Trigrams
+
+```{r trigram-top-terms, cache=TRUE, dependson="coverage-analysis", fig.cap="Top 25 trigrams showing longer phrase patterns and expressions"}
+plot_top_terms(freq_tri, top = 25, name_col = "word")
+```
+
+**Analysis**: Trigrams reveal longer expressions and phrase completions that are crucial for natural-sounding predictions. However, the lower frequencies indicate the sparsity challenge that must be addressed through smoothing techniques.
+
+## Zipf's Law in Higher-Order N-grams
+
+### Bigram Distribution
+
+```{r bigram-zipf, cache=TRUE, dependson="coverage-analysis", fig.cap="Rank-frequency distribution for bigrams showing steeper decline than unigrams"}
+plot_rank_frequency(freq_bi, top = 10000, name_col = "word", p_col = "p")
+```
+
+### Trigram Distribution
+
+```{r trigram-zipf, cache=TRUE, dependson="coverage-analysis", fig.cap="Rank-frequency distribution for trigrams demonstrating extreme sparsity"}
+plot_rank_frequency(freq_tri, top = 10000, name_col = "word", p_col = "p")
+```
+
+**Comparative Analysis**: Higher-order n-grams show increasingly steep frequency decline, reflecting the exponential growth in possible combinations. This validates the need for back-off strategies in practical language models, where trigram predictions fall back to bigrams or unigrams when data is sparse.
+
+## Coverage Patterns in N-grams
+
+### Bigram Coverage Requirements
+
+```{r bigram-coverage, cache=TRUE, dependson="coverage-analysis", fig.cap="Coverage analysis for bigrams showing increased vocabulary requirements"}
+plot_cumulative_coverage_with_marks(freq_bi, thresholds = c(0.5, 0.9))
+```
+
+### Trigram Coverage Requirements
+
+```{r trigram-coverage, cache=TRUE, dependson="coverage-analysis", fig.cap="Coverage analysis for trigrams highlighting the vocabulary explosion problem"}
+plot_cumulative_coverage_with_marks(freq_tri, thresholds = c(0.5, 0.9))
+```
+
+# Conclusions
+
+## Key Findings Summary
+
+1. **Zipf's Law Compliance**: All n-gram types follow expected power-law distributions, validating data quality and preprocessing approaches.
+
+2. **Coverage Efficiency**: Unigrams provide excellent coverage with minimal vocabulary, while higher-order n-grams require exponentially more terms for equivalent coverage.
+
+3. **Sparsity Challenge**: The dramatic increase in vocabulary requirements for trigrams (compared to coverage table above) highlights the fundamental trade-off between context richness and data sparsity in language modeling.
