@@ -62,6 +62,7 @@ app/*.rds
 *.utf8.md
 *.knit.md
 *.nb.html
+*.Rproj
 *.pdf
 
 # ---- OS / Editor specific ----
