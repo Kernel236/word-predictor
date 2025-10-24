@@ -1,6 +1,6 @@
 ---
-title: "Exploratory Data Analysis for Text Prediction Model"
-subtitle: "N-gram Frequency Analysis and Coverage Patterns"
+title: "Text Prediction Model: Exploratory Data Analysis"
+subtitle: "Understanding Word Patterns for Next-Word Prediction"
 author: "Kernel236"
 date: "`r Sys.Date()`"
 output: 
@@ -36,17 +36,35 @@ knitr::opts_chunk$set(
 )
 ```
 
-# Executive Summary
+# Project Goal
 
-This report presents a comprehensive exploratory data analysis of the English US text corpus for building a next-word prediction model. The analysis examines unigram, bigram, and trigram frequency distributions to understand language patterns and inform model architecture decisions.
+This project aims to build a **text prediction application** that suggests the next word as users type, similar to smartphone keyboard predictions. This report documents the exploratory analysis of the training data and outlines the strategy for building the prediction algorithm.
 
-> **Note**: This report uses caching to optimize knitting performance. Heavy computational chunks (data loading, tokenization, frequency analysis) are cached to avoid re-computation on subsequent runs. Cache files are stored in the `reports/cache/` directory.
+## Development Approach
 
-## Key Findings
+This project is supported by **Rcaptext**, a custom R package developed specifically for this capstone project. The package provides optimized functions for:
 
-- **Zipf's Law**: All n-gram types follow power-law distributions typical of natural language
-- **Coverage Requirements**: Higher-order n-grams require exponentially more terms for equivalent coverage
-- **Sparsity Challenge**: Vocabulary size grows dramatically with n-gram order, requiring sophisticated smoothing strategies
+-   📚 **Corpus loading and management** - Efficient handling of large text datasets
+-   🧹 **Text preprocessing** - Standardized cleaning and tokenization
+-   ✂️ **N-gram extraction** - Fast tokenization of unigrams, bigrams, and trigrams
+-   📊 **Frequency analysis** - Statistical analysis of term distributions
+-   📈 **Visualization tools** - Custom plotting functions for text analysis
+
+> 💡 **Note**: Rcaptext is being actively developed alongside this project, with functions designed specifically for natural language processing tasks in the context of predictive text modeling.
+
+# Data Overview
+
+## Dataset Description
+
+The analysis uses the **English US text corpus** from three different sources:
+
+-   📰 **News articles**: Formal, structured language
+-   📝 **Blog posts**: Semi-formal, diverse topics\
+-   🐦 **Twitter messages**: Informal, conversational language
+
+This diversity ensures our prediction model works well across different writing styles.
+
+## Data Loading and Preprocessing
 
 ```{r data-preparation, include=FALSE, cache=TRUE, cache.lazy=FALSE}
 # Load and preprocess the English US corpus
@@ -72,21 +90,33 @@ rm(corpus_raw, corpus)
 gc()
 ```
 
-## Corpus Overview
+✅ **Data successfully loaded and cleaned**
 
-The analysis is based on a stratified 5% sample of the English US corpus, maintaining proportional representation across all source types:
+For computational efficiency, this analysis uses a **5% stratified sample** of the full corpus, maintaining proportional representation from each source.
 
 ```{r corpus-stats}
-print("Sample corpus composition:")
 knitr::kable(sample_composition, 
-             caption = "Document distribution in analysis sample",
-             col.names = c("Source", "Documents"))
+             caption = "Sample distribution across text sources",
+             col.names = c("Source", "Number of Documents"),
+             format.args = list(big.mark = ","))
 ```
 
-# N-gram Frequency Analysis
+**Key Statistics**: The sample contains `r format(sum(sample_composition$documents), big.mark=",")` documents evenly distributed across news, blogs, and social media sources.
 
-## Coverage Comparison Across N-gram Types
-The coverage analysis reveals the vocabulary size requirements for different levels of language coverage. This is crucial for determining model complexity and memory requirements.
+# Understanding Word Patterns
+
+## What are N-grams?
+
+To predict the next word, we need to understand how words appear together in text:
+
+-   **Unigrams**: Individual words (e.g., "the", "happy", "cat")
+-   **Bigrams**: Two-word sequences (e.g., "the cat", "very happy")
+-   **Trigrams**: Three-word sequences (e.g., "the black cat", "very happy person")
+
+By analyzing the frequency of these patterns, we can predict what word is likely to come next.
+
+## Frequency Analysis
+
 ```{r coverage-analysis, cache=TRUE, dependson="data-preparation"}
 # Generate n-grams from the cleaned corpus sample
 # This chunk is cached to avoid re-tokenization on each knit
@@ -114,32 +144,38 @@ coverage_table <- dplyr::bind_rows(cov_uni, cov_bi, cov_tri) |>
 
 # Display results with interpretation
 knitr::kable(coverage_table, 
-             caption = "Vocabulary size required for 50% and 90% coverage",
-             col.names = c("N-gram Type", "50% Coverage", "90% Coverage"),
+             caption = "Vocabulary size needed to capture text patterns",
+             col.names = c("Pattern Type", "50% Coverage", "90% Coverage"),
              format.args = list(big.mark = ","))
 ```
 
-**Interpretation**: The exponential growth in vocabulary requirements demonstrates the curse of dimensionality in language modeling. While unigrams need relatively few terms for high coverage, trigrams require orders of magnitude more unique sequences, highlighting the need for effective smoothing and back-off strategies.
+### What This Means
 
-# Unigram Analysis
+The table above shows how many unique patterns we need to store to cover different percentages of real text:
 
-## Most Frequent Terms Distribution
+-   ✅ **Good News**: Just a few hundred individual words cover half of all text
+-   ⚠️ **Challenge**: We need many more word combinations (bigrams, trigrams) to achieve the same coverage
+-   💡 **Strategy**: Our model will use a "back-off" approach: try trigrams first, fall back to bigrams or unigrams if needed
 
-```{r unigram-top-terms, cache=TRUE, dependson="coverage-analysis", fig.cap="Top 25 most frequent unigrams showing dominance of function words"}
+# Key Findings from the Data
+
+## 1. Most Common Words
+
+```{r unigram-top-terms, cache=TRUE, dependson="coverage-analysis", fig.cap="Top 25 most frequent words in the corpus"}
 plot_top_terms(freq_uni, top = 25, name_col = "word")
 ```
 
-**Observation**: The distribution is dominated by stopwords (function words like "the", "of", "and"), which is expected in natural language. This confirms our unfiltered approach is appropriate for building a comprehensive language model that captures realistic usage patterns.
+**Finding**: The most common words are mostly function words like "the", "to", "and" - this is expected and important for natural predictions.
 
-## Zipf's Law Verification
+## 2. Word Frequency Distribution
 
-```{r unigram-zipf, cache=TRUE, dependson="coverage-analysis", fig.cap="Rank-frequency plot demonstrating Zipf's law in unigram distribution"}
+```{r unigram-zipf, cache=TRUE, dependson="coverage-analysis", fig.cap="How word frequency decreases with rank"}
 plot_rank_frequency(freq_uni, top = 10000, name_col = "word", p_col = "p")
 ```
 
-**Analysis**: The approximately linear relationship in log-log scale confirms Zipf's law (s ≈ 1), indicating that the frequency of the nth most common word is inversely proportional to n. This power-law distribution is fundamental to natural language and validates our corpus preprocessing.
+**Finding**: This graph shows a fundamental pattern in language - a few words are very common, while most words are rare. This pattern (called Zipf's Law) helps us optimize our prediction model.
 
-## Cumulative Coverage Analysis
+## 3. Coverage Efficiency
 
 ```{r coverage-function, include=FALSE}
 # Define helper function for coverage plots with threshold annotations
@@ -160,66 +196,98 @@ plot_cumulative_coverage_with_marks <- function(freq_tbl, p_col = "p", name_col 
 }
 ```
 
-```{r unigram-coverage, cache=TRUE, dependson="coverage-analysis", fig.cap="Cumulative coverage curve showing vocabulary efficiency for unigrams"}
+```{r unigram-coverage, cache=TRUE, dependson="coverage-analysis", fig.cap="How quickly we achieve text coverage"}
 plot_cumulative_coverage_with_marks(freq_uni, thresholds = c(0.5, 0.9))
 ```
 
-**Insight**: The steep initial rise demonstrates that a small number of high-frequency words account for a large proportion of language use, supporting the 80-20 principle in linguistics. This suggests that efficient prediction models can be built with relatively compact vocabularies.
+**Finding**: Just a small vocabulary of the most common words covers a large portion of typical text. This means our app can be efficient - we don't need to store every possible word to make good predictions.
 
-# N-gram Analysis (Bigrams and Trigrams)
+## 4. Word Combinations Matter
 
-## Most Frequent Bigrams
+### Common Two-Word Phrases
 
-```{r bigram-top-terms, cache=TRUE, dependson="coverage-analysis", fig.cap="Top 25 bigrams revealing common word combinations and phrases"}
+```{r bigram-top-terms, cache=TRUE, dependson="coverage-analysis", fig.cap="Most frequent two-word combinations"}
 plot_top_terms(freq_bi, top = 25, name_col = "word")
 ```
 
-**Observation**: Bigrams capture meaningful word pairs including common phrases ("of the", "in the") and collocations. These patterns are essential for context-aware prediction and demonstrate the value of considering word sequence dependencies.
+**Finding**: Looking at word pairs like "of the" and "in the" shows us natural language patterns that improve predictions beyond just looking at single words.
 
-## Most Frequent Trigrams
+### Common Three-Word Phrases
 
-```{r trigram-top-terms, cache=TRUE, dependson="coverage-analysis", fig.cap="Top 25 trigrams showing longer phrase patterns and expressions"}
+```{r trigram-top-terms, cache=TRUE, dependson="coverage-analysis", fig.cap="Most frequent three-word combinations"}
 plot_top_terms(freq_tri, top = 25, name_col = "word")
 ```
 
-**Analysis**: Trigrams reveal longer expressions and phrase completions that are crucial for natural-sounding predictions. However, the lower frequencies indicate the sparsity challenge that must be addressed through smoothing techniques.
+**Finding**: Three-word sequences capture even more context, but they're less common. This is why our model needs a smart fallback strategy.
 
-## Zipf's Law in Higher-Order N-grams
+## 5. Comparing Pattern Complexity
 
-### Bigram Distribution
-
-```{r bigram-zipf, cache=TRUE, dependson="coverage-analysis", fig.cap="Rank-frequency distribution for bigrams showing steeper decline than unigrams"}
+```{r bigram-zipf, cache=TRUE, dependson="coverage-analysis", fig.cap="Two-word combination frequencies"}
 plot_rank_frequency(freq_bi, top = 10000, name_col = "word", p_col = "p")
 ```
 
-### Trigram Distribution
-
-```{r trigram-zipf, cache=TRUE, dependson="coverage-analysis", fig.cap="Rank-frequency distribution for trigrams demonstrating extreme sparsity"}
+```{r trigram-zipf, cache=TRUE, dependson="coverage-analysis", fig.cap="Three-word combination frequencies"}
 plot_rank_frequency(freq_tri, top = 10000, name_col = "word", p_col = "p")
 ```
 
-**Comparative Analysis**: Higher-order n-grams show increasingly steep frequency decline, reflecting the exponential growth in possible combinations. This validates the need for back-off strategies in practical language models, where trigram predictions fall back to bigrams or unigrams when data is sparse.
+**Finding**: As we move from single words to word pairs to triplets, patterns become more specific but also rarer. This confirms we need a flexible prediction strategy.
 
-## Coverage Patterns in N-grams
-
-### Bigram Coverage Requirements
-
-```{r bigram-coverage, cache=TRUE, dependson="coverage-analysis", fig.cap="Coverage analysis for bigrams showing increased vocabulary requirements"}
+```{r bigram-coverage, cache=TRUE, dependson="coverage-analysis", fig.cap="Coverage analysis for two-word combinations"}
 plot_cumulative_coverage_with_marks(freq_bi, thresholds = c(0.5, 0.9))
 ```
 
-### Trigram Coverage Requirements
-
-```{r trigram-coverage, cache=TRUE, dependson="coverage-analysis", fig.cap="Coverage analysis for trigrams highlighting the vocabulary explosion problem"}
+```{r trigram-coverage, cache=TRUE, dependson="coverage-analysis", fig.cap="Coverage analysis for three-word combinations"}
 plot_cumulative_coverage_with_marks(freq_tri, thresholds = c(0.5, 0.9))
 ```
 
-# Conclusions
+# Plans for the Prediction Algorithm
 
-## Key Findings Summary
+## Algorithm Strategy
 
-1. **Zipf's Law Compliance**: All n-gram types follow expected power-law distributions, validating data quality and preprocessing approaches.
+Based on the exploratory analysis, the prediction algorithm will use a **back-off model**:
 
-2. **Coverage Efficiency**: Unigrams provide excellent coverage with minimal vocabulary, while higher-order n-grams require exponentially more terms for equivalent coverage.
+1.  **First Try**: Look for matching three-word sequences (trigrams) - these give the most accurate predictions
+2.  **Second Try**: If no trigram match, fall back to two-word sequences (bigrams)
+3.  **Final Fallback**: If still no match, use single-word frequencies (unigrams)
 
-3. **Sparsity Challenge**: The dramatic increase in vocabulary requirements for trigrams (compared to coverage table above) highlights the fundamental trade-off between context richness and data sparsity in language modeling.
+This approach balances accuracy (from longer sequences) with coverage (from shorter sequences).
+
+## Model Optimization
+
+The analysis revealed important optimization opportunities:
+
+-   🎯 **Focus on common patterns**: 50% of text is covered by relatively few word combinations
+-   💾 **Memory efficiency**: We can prune rare patterns while maintaining good coverage
+-   ⚡ **Speed**: Pre-computing and indexing frequent patterns will enable fast predictions
+
+## Planned Shiny App Features
+
+The final application will include:
+
+1.  **Text Input Box**: Users type their text
+2.  **Live Predictions**: Top 3-5 word suggestions update as user types
+3.  **Confidence Indicator**: Visual feedback on prediction confidence
+4.  **Simple Interface**: Clean, responsive design for easy use
+5.  **Performance Stats**: Display prediction speed and accuracy
+
+## Technical Implementation
+
+-   **Language**: R with Shiny framework
+-   **Core Engine**: Custom Rcaptext package for text processing and n-gram analysis
+-   **Data Structure**: Optimized lookup tables for fast n-gram matching
+-   **Algorithm**: Stupid back-off smoothing for handling unseen combinations
+-   **Deployment**: Shiny server or shinyapps.io for web access
+
+## Next Steps
+
+1.  Build complete n-gram frequency tables from full dataset using Rcaptext
+2.  Implement back-off prediction algorithm
+3.  Optimize for speed and memory usage
+4.  Create interactive Shiny interface
+5.  Test with real users and refine
+
+------------------------------------------------------------------------
+
+**Report generated**: `r Sys.Date()`\
+**Data source**: SwiftKey English US corpus (blogs, news, Twitter)\
+**Analysis powered by**: Custom Rcaptext R package (developed for this capstone project)

@@ -24,24 +24,33 @@ This project implements a **next-word prediction model** based on statistical n-
 
 ```
 word-predictor/
-├── README.md                    # Project documentation
-├── word-predictor.Rproj        # RStudio project configuration
+├── README.md                          # Project documentation
+├── word-predictor.Rproj              # RStudio project configuration
+├── .gitignore                        # Git ignore rules
 ├── data/
-│   ├── raw/                    # Original text corpora
-│   │   ├── en_US.blogs.txt     # Blog posts corpus
-│   │   ├── en_US.news.txt      # News articles corpus
-│   │   ├── en_US.twitter.txt   # Twitter messages corpus
-│   │   └── [other languages]   # Additional language datasets
-│   └── processed/              # Processed frequency tables
-│       ├── freq_uni_en_top100k.rds  # Unigram frequencies
+│   ├── raw/                          # Original text corpora (git-ignored)
+│   │   ├── en_US.blogs.txt           # English blogs (~200MB)
+│   │   ├── en_US.news.txt            # English news (~200MB)
+│   │   ├── en_US.twitter.txt         # English tweets (~160MB)
+│   │   ├── de_DE.* / fi_FI.* / ru_RU.*  # Other languages
+│   └── processed/                    # Generated frequency tables (git-ignored)
+│       ├── freq_uni_en_top100k.rds   # Unigram frequencies
 │       ├── freq_bi_top100k.rds       # Bigram frequencies
-│       └── freq_tri_top100k.rds      # Trigram frequencies
+│       ├── freq_tri_top100k.rds      # Trigram frequencies
+│       ├── uni_lookup.rds            # Pruned unigram lookup
+│       ├── bi_pruned.rds             # Pruned bigram lookup
+│       ├── tri_pruned.rds            # Pruned trigram lookup
+│       └── lang_meta.rds             # Model metadata
 ├── R/
-│   └── eda.R                   # Exploratory data analysis script
+│   ├── eda.R                         # Exploratory data analysis
+│   ├── build_lang_model.R            # Language model construction
+│   └── predict_demo.R                # Prediction algorithm demo
 ├── reports/
-│   ├── eda.Rmd                # EDA report and visualizations
-│   └── cache/                 # Cached computation results (git-ignored)
-└── app/                       # [Future] Shiny application
+│   ├── eda.Rmd                       # EDA report (R Markdown)
+│   └── cache/                        # Cached results (git-ignored)
+├── docs/                             # GitHub Pages (for HTML report)
+│   └── index.html                    # Published EDA report
+└── app/                              # Shiny application (coming soon)
 ```
 
 ## 📖 Methodology
@@ -73,6 +82,28 @@ word-predictor/
 
 </div>
 
+## 🔄 Project Workflow
+
+### Phase 1: Data Exploration ✅
+- **Script**: `R/eda.R`
+- **Output**: `reports/eda.Rmd` → `docs/index.html`
+- **Purpose**: Understand data patterns, validate approach, identify optimization opportunities
+
+### Phase 2: Model Building ✅
+- **Script**: `R/build_lang_model.R`
+- **Output**: Pruned n-gram lookup tables in `data/processed/`
+- **Purpose**: Create optimized language model with frequency pruning and backoff structure
+
+### Phase 3: Prediction Algorithm ✅
+- **Script**: `R/predict_demo.R`
+- **Output**: Working prediction function with demo
+- **Purpose**: Implement and test stupid backoff algorithm for next-word prediction
+
+### Phase 4: Shiny Application 🚧
+- **Location**: `app/` (in development)
+- **Features**: Interactive UI, live predictions, performance metrics
+- **Purpose**: User-friendly web application for text prediction
+
 ## 🚀 Quick Start
 
 ### Prerequisites
@@ -93,11 +124,17 @@ open word-predictor.Rproj
 
 ### Run Analysis
 ```r
-# Load and run full analysis
+# 1. Exploratory Data Analysis
 source("R/eda.R")
 
-# Generate interactive report
-rmarkdown::render("reports/eda.Rmd")
+# 2. Generate HTML report
+rmarkdown::render("reports/eda.Rmd", output_dir = "docs", output_file = "index.html")
+
+# 3. Build language model (full corpus)
+source("R/build_lang_model.R")
+
+# 4. Test prediction algorithm
+source("R/predict_demo.R")
 ```
 
 ## ⚙️ Technical Dependencies
