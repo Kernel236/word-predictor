@@ -142,7 +142,3 @@ saveRDS(freq_tri, "data/processed/freq_tri_top100k.rds")    # Trigram frequencie
 
 print("EDA completed successfully!")
 print("Frequency tables saved to data/processed/ directory")
-
-# ==============================================================================
-# END OF SCRIPT
-# ==============================================================================
