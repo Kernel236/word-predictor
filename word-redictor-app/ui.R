@@ -366,6 +366,42 @@ ui <- navbarPage(
         )
       ),
       
+      # Algorithm Performance Charts
+      div(class = "algo-card", style = "margin-top: 30px;",
+        h3("📈 Algorithm Performance Analysis"),
+        fluidRow(
+          column(6,
+            div(class = "text-center",
+              h4("🎯 Katz Backoff Algorithm", style = "color: steelblue;"),
+              tags$img(src = "plot_accuracy_at_k_long.png", 
+                      width = "100%", style = "max-width: 350px; border-radius: 10px; box-shadow: 0 2px 8px rgba(0,0,0,0.1);"),
+              br(), br(),
+              tags$small("Fast and reliable predictions using statistical backoff", 
+                        style = "color: #666;")
+            )
+          ),
+          column(6,
+            div(class = "text-center",
+              h4("🧠 Linear Interpolation", style = "color: darkblue;"),
+              tags$img(src = "plot_accuracy_at_k_interpolation.png", 
+                      width = "100%", style = "max-width: 350px; border-radius: 10px; box-shadow: 0 2px 8px rgba(0,0,0,0.1);"),
+              br(), br(),
+              tags$small("Higher accuracy through weighted n-gram combination", 
+                        style = "color: #666;")
+            )
+          )
+        ),
+        hr(),
+        div(class = "text-center",
+          h4("⚖️ Head-to-Head Comparison", style = "color: #333; margin-bottom: 20px;"),
+          tags$img(src = "plot_algorithm_comparison.png", 
+                  width = "100%", style = "max-width: 500px; border-radius: 10px; box-shadow: 0 2px 8px rgba(0,0,0,0.1);"),
+          br(), br(),
+          tags$small("Both algorithms evaluated on identical test data (10,000 cases)", 
+                    style = "color: #666;")
+        )
+      ),
+      
       # Footer con GitHub links
       div(class = "info-card", style = "text-align: center; margin-top: 30px;",
         hr(),
