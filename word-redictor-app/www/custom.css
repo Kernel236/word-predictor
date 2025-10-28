@@ -1,0 +1,362 @@
+/* custom.css - Cyberpunk Theme for Word Predictor */
+
+/* ===== CYBERPUNK THEME ===== */
+@import url('https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@300;400;600;700&family=Orbitron:wght@400;700;900&display=swap');
+
+:root {
+  --cyber-primary: #00ff88;
+  --cyber-secondary: #ff0080;
+  --cyber-accent: #00d4ff;
+  --cyber-bg-dark: #0a0a0f;
+  --cyber-bg-medium: #1a1a2e;
+  --cyber-bg-light: #16213e;
+  --cyber-text: #e0e0e0;
+  --cyber-text-bright: #ffffff;
+  --cyber-border: #00ff88;
+}
+
+.navbar-brand {
+  font-family: 'Orbitron', monospace !important;
+  font-weight: 700 !important;
+  font-size: 1.6em !important;
+  color: var(--cyber-primary) !important;
+  text-shadow: 0 0 10px var(--cyber-primary);
+}
+
+body {
+  font-family: 'JetBrains Mono', monospace;
+  background: linear-gradient(135deg, var(--cyber-bg-dark) 0%, var(--cyber-bg-medium) 100%);
+  color: var(--cyber-text);
+  min-height: 100vh;
+}
+
+/* Navbar cyberpunk */
+.navbar-default {
+  background: rgba(26, 26, 46, 0.95) !important;
+  border-bottom: 2px solid var(--cyber-primary);
+  backdrop-filter: blur(10px);
+}
+
+.navbar-nav > li > a {
+  color: var(--cyber-text) !important;
+  font-family: 'Orbitron', monospace !important;
+  font-weight: 600 !important;
+  transition: all 0.3s ease;
+}
+
+.navbar-nav > li > a:hover {
+  color: var(--cyber-primary) !important;
+  text-shadow: 0 0 8px var(--cyber-primary);
+}
+
+/* ===== PANNELLO CYBERPUNK ===== */
+.well {
+  border-radius: 8px;
+  box-shadow: 0 0 20px rgba(0, 255, 136, 0.3);
+  border: 1px solid var(--cyber-primary);
+  background: linear-gradient(135deg, var(--cyber-bg-medium) 0%, var(--cyber-bg-light) 100%);
+  color: var(--cyber-text);
+  position: relative;
+  overflow: hidden;
+}
+
+.well::before {
+  content: '';
+  position: absolute;
+  top: -2px;
+  left: -2px;
+  right: -2px;
+  bottom: -2px;
+  background: linear-gradient(45deg, var(--cyber-primary), var(--cyber-accent), var(--cyber-secondary));
+  z-index: -1;
+  border-radius: 8px;
+  opacity: 0.7;
+}
+
+.well h5 {
+  color: var(--cyber-primary);
+  font-family: 'Orbitron', monospace;
+  font-weight: 700;
+  margin-bottom: 15px;
+  text-shadow: 0 0 5px var(--cyber-primary);
+}
+
+/* ===== FORM INPUTS CYBERPUNK ===== */
+.radio, .checkbox {
+  color: var(--cyber-text) !important;
+}
+
+.radio label, .checkbox label {
+  color: var(--cyber-text) !important;
+  font-weight: 500 !important;
+  font-family: 'JetBrains Mono', monospace !important;
+}
+
+.form-group label {
+  color: var(--cyber-primary) !important;
+  font-weight: 600 !important;
+  font-family: 'Orbitron', monospace !important;
+  text-shadow: 0 0 3px var(--cyber-primary);
+}
+
+/* ===== CYBER BUTTONS ===== */
+.btn-primary {
+  background: linear-gradient(45deg, var(--cyber-primary), var(--cyber-accent));
+  border: 2px solid var(--cyber-primary);
+  border-radius: 6px;
+  padding: 12px 30px;
+  font-weight: 700;
+  font-size: 1.1em;
+  font-family: 'Orbitron', monospace;
+  color: var(--cyber-bg-dark);
+  transition: all 0.3s ease;
+  box-shadow: 0 0 20px rgba(0, 255, 136, 0.4);
+  text-transform: uppercase;
+  letter-spacing: 1px;
+}
+
+.btn-primary:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 0 30px rgba(0, 255, 136, 0.8);
+  background: linear-gradient(45deg, var(--cyber-accent), var(--cyber-primary));
+  color: var(--cyber-bg-dark);
+}
+
+.btn-primary:active {
+  transform: translateY(0);
+  box-shadow: 0 0 15px rgba(0, 255, 136, 0.6);
+}
+
+/* ===== STATUS BADGES ===== */
+.status-fast {
+  background: linear-gradient(45deg, #00C851, #00FF00);
+  color: white;
+  padding: 8px 15px;
+  border-radius: 20px;
+  font-weight: bold;
+  display: inline-block;
+  margin: 5px 0;
+  box-shadow: 0 2px 10px rgba(0, 200, 81, 0.3);
+}
+
+.status-good {
+  background: linear-gradient(45deg, #ffbb33, #ff8800);
+  color: white;
+  padding: 8px 15px;
+  border-radius: 20px;
+  font-weight: bold;
+  display: inline-block;
+  margin: 5px 0;
+  box-shadow: 0 2px 10px rgba(255, 187, 51, 0.3);
+}
+
+.status-slow {
+  background: linear-gradient(45deg, #ff4444, #cc0000);
+  color: white;
+  padding: 8px 15px;
+  border-radius: 20px;
+  font-weight: bold;
+  display: inline-block;
+  margin: 5px 0;
+  box-shadow: 0 2px 10px rgba(255, 68, 68, 0.3);
+}
+
+/* ===== CYBER INFO CARDS ===== */
+.info-card {
+  background: linear-gradient(135deg, var(--cyber-bg-medium) 0%, var(--cyber-bg-light) 100%);
+  border-radius: 8px;
+  padding: 20px;
+  margin: 15px 0;
+  box-shadow: 0 0 15px rgba(0, 255, 136, 0.2);
+  border: 1px solid var(--cyber-primary);
+  border-left: 4px solid var(--cyber-primary);
+  transition: all 0.3s ease;
+  position: relative;
+  overflow: hidden;
+}
+
+.info-card::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 2px;
+  background: linear-gradient(90deg, transparent, var(--cyber-primary), transparent);
+  animation: scan 2s linear infinite;
+}
+
+@keyframes scan {
+  0% { transform: translateX(-100%); }
+  100% { transform: translateX(100%); }
+}
+
+.info-card:hover {
+  transform: translateY(-3px);
+  box-shadow: 0 0 25px rgba(0, 255, 136, 0.4);
+  border-color: var(--cyber-accent);
+}
+
+.info-card h4, .info-card h5 {
+  color: var(--cyber-primary);
+  font-family: 'Orbitron', monospace;
+  font-weight: 700;
+  margin-bottom: 15px;
+  text-shadow: 0 0 5px var(--cyber-primary);
+}
+
+/* ===== ALGORITHM TAGS ===== */
+.algo-tag {
+  display: inline-block;
+  padding: 6px 12px;
+  margin: 3px;
+  border-radius: 15px;
+  font-size: 0.85em;
+  font-weight: bold;
+}
+
+.algo-backoff {
+  background: linear-gradient(45deg, #667eea, #764ba2);
+  color: white;
+}
+
+.algo-interpolated {
+  background: linear-gradient(45deg, #f093fb, #f5576c);
+  color: white;
+}
+
+/* ===== CYBER INPUT STYLING ===== */
+.form-control {
+  border-radius: 4px;
+  border: 1px solid var(--cyber-primary);
+  background: var(--cyber-bg-dark);
+  color: var(--cyber-text);
+  font-family: 'JetBrains Mono', monospace;
+  transition: all 0.3s ease;
+  box-shadow: inset 0 0 5px rgba(0, 255, 136, 0.1);
+}
+
+.form-control:focus {
+  border-color: var(--cyber-accent);
+  box-shadow: 0 0 10px rgba(0, 212, 255, 0.5);
+  background: var(--cyber-bg-medium);
+  color: var(--cyber-text-bright);
+}
+
+.form-control::placeholder {
+  color: rgba(224, 224, 224, 0.6);
+}
+
+/* ===== CYBER DATA TABLES ===== */
+.dataTables_wrapper {
+  border-radius: 8px;
+  overflow: hidden;
+  box-shadow: 0 0 20px rgba(0, 255, 136, 0.3);
+  background: var(--cyber-bg-medium);
+  border: 1px solid var(--cyber-primary);
+}
+
+.dataTables_wrapper .dataTables_length,
+.dataTables_wrapper .dataTables_filter,
+.dataTables_wrapper .dataTables_info,
+.dataTables_wrapper .dataTables_paginate {
+  color: var(--cyber-text) !important;
+  font-family: 'JetBrains Mono', monospace !important;
+}
+
+.dataTables_wrapper .dataTables_filter input {
+  background: var(--cyber-bg-dark) !important;
+  border: 1px solid var(--cyber-primary) !important;
+  color: var(--cyber-text) !important;
+  border-radius: 4px !important;
+}
+
+table.dataTable thead th {
+  background: linear-gradient(135deg, var(--cyber-bg-dark), var(--cyber-bg-medium)) !important;
+  color: var(--cyber-primary) !important;
+  border-bottom: 2px solid var(--cyber-primary) !important;
+  font-family: 'Orbitron', monospace !important;
+  font-weight: 700 !important;
+  text-shadow: 0 0 5px var(--cyber-primary);
+}
+
+table.dataTable tbody tr {
+  background: var(--cyber-bg-medium) !important;
+  color: var(--cyber-text) !important;
+  font-family: 'JetBrains Mono', monospace !important;
+}
+
+table.dataTable tbody tr:hover {
+  background: var(--cyber-bg-light) !important;
+  box-shadow: 0 0 10px rgba(0, 255, 136, 0.2) !important;
+}
+
+table.dataTable tbody td {
+  border-top: 1px solid rgba(0, 255, 136, 0.2) !important;
+}
+
+/* ===== FOOTER INFO ===== */
+.footer-info {
+  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+  color: white;
+  padding: 20px;
+  border-radius: 15px;
+  margin-top: 30px;
+  text-align: center;
+}
+
+/* ===== CYBER LOADING SPINNER ===== */
+.loading-spinner {
+  border: 3px solid transparent;
+  border-top: 3px solid var(--cyber-primary);
+  border-radius: 50%;
+  width: 30px;
+  height: 30px;
+  animation: cyberspin 1s linear infinite;
+  margin: 0 auto;
+  box-shadow: 0 0 15px var(--cyber-primary);
+}
+
+@keyframes cyberspin {
+  0% { 
+    transform: rotate(0deg);
+    box-shadow: 0 0 15px var(--cyber-primary);
+  }
+  50% {
+    box-shadow: 0 0 25px var(--cyber-accent);
+  }
+  100% { 
+    transform: rotate(360deg);
+    box-shadow: 0 0 15px var(--cyber-primary);
+  }
+}
+
+/* ===== CYBER SCROLLBAR ===== */
+::-webkit-scrollbar {
+  width: 8px;
+}
+
+::-webkit-scrollbar-track {
+  background: var(--cyber-bg-dark);
+}
+
+::-webkit-scrollbar-thumb {
+  background: linear-gradient(180deg, var(--cyber-primary), var(--cyber-accent));
+  border-radius: 4px;
+}
+
+::-webkit-scrollbar-thumb:hover {
+  background: linear-gradient(180deg, var(--cyber-accent), var(--cyber-secondary));
+}
+
+/* ===== RESPONSIVITÀ ===== */
+@media (max-width: 768px) {
+  .sidebar-panel {
+    margin-bottom: 20px;
+  }
+  
+  .btn-primary {
+    font-size: 1em;
+    padding: 10px 25px;
+  }
+}
