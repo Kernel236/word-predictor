@@ -64,12 +64,16 @@ message(">> Running prediction examples...")
 
 # Define test queries covering different scenarios
 queries <- c(
-  "i love",         # Common bigram context
-  "one of",         # Preposition phrase
-  "in the",         # Article context
-  "thanks for",     # Polite expression
-  "this is",        # Demonstrative + verb
-  ""                # Empty input -> unigram fallback
+  "When you breathe, I want to be the air for you. I'll be there for you, I'd live and I'd",         # Common bigram context
+  "Guy at my table's wife got up to go to the bathroom and I asked about dessert and he started telling me about his",         # Preposition phrase
+  "I'd give anything to see arctic monkeys this",         
+  "Talking to your mom has the same effect as a hug and helps reduce your",     # Polite expression
+  "When you were in Holland you were like 1 inch away from me but you hadn't time to take a",       
+  "I'd just like all of these questions answered, a presentation of evidence, and a jury to settle the",
+  "I can't deal with unsymetrical things. I can't even hold an uneven number of bags of groceries in each",
+  "Every inch of you is perfect from the bottom to the",
+  "I’m thankful my childhood was filled with imagination and bruises from playing",
+  "I like how the same people are in almost all of Adam Sandler's"
 )
 
 # Run predictions for all queries
