@@ -24,33 +24,41 @@ This project implements a **next-word prediction model** based on statistical n-
 
 ```
 word-predictor/
-├── README.md                          # Project documentation
-├── word-predictor.Rproj              # RStudio project configuration
-├── .gitignore                        # Git ignore rules
+├── README.md                          # Main project documentation
+├── .gitignore                        # Git ignore rules  
 ├── data/
-│   ├── raw/                          # Original text corpora (git-ignored)
+│   ├── raw/                          # SwiftKey corpora (git-ignored)
 │   │   ├── en_US.blogs.txt           # English blogs (~200MB)
 │   │   ├── en_US.news.txt            # English news (~200MB)
 │   │   ├── en_US.twitter.txt         # English tweets (~160MB)
-│   │   ├── de_DE.* / fi_FI.* / ru_RU.*  # Other languages
-│   └── processed/                    # Generated frequency tables (git-ignored)
-│       ├── freq_uni_en_top100k.rds   # Unigram frequencies
-│       ├── freq_bi_top100k.rds       # Bigram frequencies
-│       ├── freq_tri_top100k.rds      # Trigram frequencies
-│       ├── uni_lookup.rds            # Pruned unigram lookup
-│       ├── bi_pruned.rds             # Pruned bigram lookup
-│       ├── tri_pruned.rds            # Pruned trigram lookup
-│       └── lang_meta.rds             # Model metadata
+│   │   └── de_DE.* / fi_FI.* / ru_RU.*  # German, Finnish, Russian
+│   └── processed/                    # Optimized model files (git-ignored)
+│       ├── uni_lookup.rds            # Unigram lookup (52,718 terms)
+│       ├── bi_pruned.rds             # Bigram model (183,284 pairs)
+│       ├── tri_pruned.rds            # Trigram model (508,003 triplets)
+│       └── lang_meta.rds             # Model metadata & statistics
 ├── R/
 │   ├── eda.R                         # Exploratory data analysis
-│   ├── build_lang_model.R            # Language model construction
-│   └── predict_demo.R                # Prediction algorithm demo
+│   ├── build_lang_model.R            # Model construction pipeline
+│   ├── predict_demo.R                # CLI prediction demo
+│   └── run-model&eval.R              # Model evaluation & benchmarking
 ├── reports/
-│   ├── eda.Rmd                       # EDA report (R Markdown)
-│   └── cache/                        # Cached results (git-ignored)
-├── docs/                             # GitHub Pages (for HTML report)
-│   └── index.html                    # Published EDA report
-└── app/                              # Shiny application (coming soon)
+│   ├── eda.Rmd                       # Research report (R Markdown)
+│   └── cache/                        # Computation cache (git-ignored)
+├── docs/
+│   └── index.html                    # Published EDA report (GitHub Pages)
+├── results/                          # Performance evaluation data
+│   ├── hit_breakdown_*.csv           # Prediction accuracy by rank
+│   ├── timing_summary_*.csv          # Performance benchmarks
+│   └── plot_*.png                    # Visualization outputs
+├── word-redictor-app/               # 🔮 Interactive Shiny Application
+│   ├── README.md                     # App-specific documentation
+│   ├── ui.R                          # Cyberpunk-themed interface
+│   ├── server.R                      # Prediction server logic  
+│   ├── utils.R                       # Core algorithm functions
+│   ├── run_app.R                     # Launch script
+│   └── www/                          # Web assets (CSS, JS)
+└── word-predictor.Rproj             # RStudio project (git-ignored)
 ```
 
 ## 📖 Methodology
@@ -73,36 +81,61 @@ word-predictor/
 ## 📊 Key Findings
 
 <div align="center">
+| N-gram Type | 50% Coverage | 90% Coverage | Final Model Size |
+|-------------|--------------|--------------|------------------|
+| 🔤 **Unigrams** | ~100 terms | ~1,000 terms | 52,718 terms |
+| 🔤🔤 **Bigrams** | ~1,000 terms | ~10,000 terms | 183,284 pairs |
+| 🔤🔤🔤 **Trigrams** | ~10,000+ terms | ~100,000+ terms | 508,003 triplets |
 
-| N-gram Type | 50% Coverage | 90% Coverage | Key Insight |
-|-------------|--------------|--------------|-------------|
-| 🔤 **Unigrams** | ~100 terms | ~1,000 terms | High efficiency |
-| 🔤🔤 **Bigrams** | ~1,000 terms | ~10,000 terms | Moderate growth |
-| 🔤🔤🔤 **Trigrams** | ~10,000+ terms | ~100,000+ terms | Exponential explosion |
+**Total Model**: 744K n-grams | **Compressed Size**: ~12MB
 
 </div>
+
+## 🔮 Interactive Application
+
+The project culminates in a **cyberpunk-themed Shiny application** with dual prediction algorithms:
+
+### 🚀 Live Demo Features
+- 🎯 **Real-time Predictions**: Instant word suggestions as you type
+- 🧠 **Dual Algorithm Modes**: Stupid Backoff vs. Interpolated+IDF
+- 📊 **Performance Metrics**: Live timing and accuracy statistics
+- 🎨 **Cyberpunk UI**: Custom CSS with neon aesthetics and animations
+- ⚙️ **Tunable Parameters**: Alpha penalties, lambda weights, and more
+
+### 📈 Performance Metrics
+| Metric | Stupid Backoff | Interpolated+IDF |
+|--------|---------------|------------------|
+| **Average Latency** | ~30ms | ~45ms |
+| **Memory Usage** | 12MB | 12MB |
+| **Accuracy Mode** | Fast & Efficient | Research-grade |
+
+> 📋 **Full app documentation**: [word-redictor-app/README.md](word-redictor-app/README.md)
 
 ## 🔄 Project Workflow
 
 ### Phase 1: Data Exploration ✅
 - **Script**: `R/eda.R`
-- **Output**: `reports/eda.Rmd` → `docs/index.html`
-- **Purpose**: Understand data patterns, validate approach, identify optimization opportunities
+- **Report**: `reports/eda.Rmd` → `docs/index.html`
+- **Purpose**: Statistical analysis, Zipf's law validation, coverage optimization
+- **Output**: [📊 EDA Report](https://kernel236.github.io/word-predictor/)
 
 ### Phase 2: Model Building ✅
 - **Script**: `R/build_lang_model.R`
-- **Output**: Pruned n-gram lookup tables in `data/processed/`
-- **Purpose**: Create optimized language model with frequency pruning and backoff structure
+- **Output**: Optimized n-gram lookup tables (744K total terms)
+- **Features**: Frequency pruning, back-off structure, memory optimization
+- **Size**: ~12MB compressed model
 
-### Phase 3: Prediction Algorithm ✅
-- **Script**: `R/predict_demo.R`
-- **Output**: Working prediction function with demo
-- **Purpose**: Implement and test stupid backoff algorithm for next-word prediction
+### Phase 3: Algorithm Development ✅
+- **Scripts**: `R/predict_demo.R`, `R/run-model&eval.R`
+- **Algorithms**: Stupid Backoff + Interpolated IDF
+- **Performance**: <50ms prediction latency, research-grade accuracy
+- **Evaluation**: Comprehensive benchmarking with visualizations
 
-### Phase 4: Shiny Application 🚧
-- **Location**: `app/` (in development)
-- **Features**: Interactive UI, live predictions, performance metrics
-- **Purpose**: User-friendly web application for text prediction
+### Phase 4: Interactive Application ✅
+- **Location**: `word-redictor-app/`
+- **Features**: Dual algorithm modes, cyberpunk UI, real-time metrics
+- **Access**: Web interface with auto-launch capabilities
+- **Tech Stack**: Shiny + custom CSS/JS + Rcaptext engine
 
 ## 🚀 Quick Start
 
@@ -122,19 +155,35 @@ cd word-predictor
 open word-predictor.Rproj
 ```
 
-### Run Analysis
+### Run Complete Pipeline
 ```r
 # 1. Exploratory Data Analysis
 source("R/eda.R")
 
-# 2. Generate HTML report
-rmarkdown::render("reports/eda.Rmd", output_dir = "docs", output_file = "index.html")
-
-# 3. Build language model (full corpus)
+# 2. Build optimized language model
 source("R/build_lang_model.R")
 
-# 4. Test prediction algorithm
+# 3. Test CLI prediction demo
 source("R/predict_demo.R")
+
+# 4. Run evaluation benchmarks
+source("R/run-model&eval.R")
+
+# 5. Launch interactive app
+setwd("word-redictor-app")
+source("run_app.R")  # Opens at http://localhost:8080
+```
+
+### Quick App Launch
+```bash
+# Navigate to app directory
+cd word-redictor-app/
+
+# Launch with default settings
+Rscript run_app.R
+
+# Or with custom port
+Rscript run_app.R 3838
 ```
 
 ## ⚙️ Technical Dependencies
@@ -214,18 +263,29 @@ freq_bi  <- readRDS("data/processed/freq_bi_top100k.rds")
 freq_tri <- readRDS("data/processed/freq_tri_top100k.rds")
 ```
 
-## 🚀 Performance Optimization
+## 🚀 Performance & Optimization
 
-### 💾 Caching System
-- 🔄 **Automatic Caching**: Heavy computations cached using knitr's caching system
-- 🎯 **Dependency Tracking**: Smart cache invalidation based on chunk dependencies  
-- 📁 **Storage**: Cache files in `reports/cache/` (excluded from version control)
-- ⚡ **Benefits**: Reduces report generation from minutes to seconds after first run
+### 🎯 Model Performance
+Based on comprehensive evaluation with `R/run-model&eval.R`:
 
-### 🧠 Memory Management
-- 🗑️ **Garbage Collection**: Automatic cleanup of large temporary objects
-- 🎲 **Strategic Sampling**: Uses 5% corpus sample for optimal analysis depth vs performance
-- 📦 **Efficient Storage**: RDS format for compressed serialization of frequency tables
+- **Prediction Speed**: <50ms average latency
+- **Model Size**: 744K n-grams compressed to ~12MB  
+- **Memory Efficiency**: Optimized lookup structures
+- **Accuracy**: Research-grade precision with proper back-off
+
+### 📊 Benchmark Results
+Performance data available in `results/` directory:
+
+- � **Accuracy at K**: Hit rates for top-1, top-3, top-5 predictions
+- ⏱️ **Latency Analysis**: Response time distributions and percentiles
+- 🎯 **Rank Distribution**: Where correct predictions typically appear
+- 📋 **Detailed CSVs**: `timing_summary_*.csv`, `hit_breakdown_*.csv`
+
+### 💾 Technical Optimizations
+- � **Smart Caching**: Knitr-based computation caching for development
+- � **Frequency Pruning**: Removes low-frequency n-grams below thresholds
+- 📦 **Compressed Storage**: RDS serialization for efficient I/O
+- 🧠 **Memory Management**: Strategic sampling and garbage collection
 
 
 ## 🤝 Contributing
