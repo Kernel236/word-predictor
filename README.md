@@ -8,8 +8,17 @@
 
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg?style=flat-square)](https://opensource.org/licenses/MIT)
 [![R Version](https://img.shields.io/badge/R-%3E%3D4.0-blue.svg?style=flat-square)](https://www.r-project.org/)
-[![Project Status](https://img.shields.io/badge/Status-Active%20Development-green.svg?style=flat-square)](https://github.com/Kernel236/word-predictor)
+[![Project Status](https://img.shields.io/badge/Status-Complete%20%26%20Deployed-green.svg?style=flat-square)](https://github.com/Kernel236/word-predictor)
 [![Last Updated](https://img.shields.io/badge/Last%20Updated-October%202025-orange.svg?style=flat-square)](https://github.com/Kernel236/word-predictor)
+
+### 🚀 Live Demos
+
+<div align="center">
+
+[![Shiny App](https://img.shields.io/badge/🔮_Interactive_App-Shiny-blue?style=for-the-badge&logo=r&logoColor=white)](https://kernel236.shinyapps.io/word-predictor-app/)
+[![GitHub Pages](https://img.shields.io/badge/🎓_Academic_Presentation-GitHub_Pages-black?style=for-the-badge&logo=github&logoColor=white)](https://kernel236.github.io/word-predictor/word-predictor-pitch.html#1)
+
+</div>
 
 
 </div>
@@ -113,6 +122,8 @@ word-predictor/
 
 The project culminates in a **dual-theme Shiny application** with advanced prediction algorithms and interactive features:
 
+> 🚀 **[Try the Live App](https://kernel236.shinyapps.io/word-predictor-app/)** - Interactive word prediction with dual themes!
+
 ### 🚀 Live Demo Features
 - 🎯 **Real-time Predictions**: Instant word suggestions as you type
 - 🧠 **Dual Algorithm Modes**: Stupid Backoff vs. Interpolated+IDF
@@ -142,6 +153,8 @@ The project culminates in a **dual-theme Shiny application** with advanced predi
 
 The project includes a **professional 5-slide presentation** suitable for capstone project submissions and academic conferences:
 
+> 🎯 **[View Live Presentation](https://kernel236.github.io/word-predictor/word-predictor-pitch.html#1)** - Professional slides with real data and screenshots!
+
 ### 📑 Presentation Structure
 1. **Project Overview** - Problem statement and methodology
 2. **N-gram Language Model** - Technical approach and algorithms  
@@ -151,7 +164,7 @@ The project includes a **professional 5-slide presentation** suitable for capsto
 
 ### 🌐 Live Presentation
 - **Location**: [`presentation/word-predictor-pitch.Rmd`](presentation/word-predictor-pitch.Rmd)
-- **Online Version**: [GitHub Pages Presentation](https://kernel236.github.io/word-predictor/word-predictor-pitch.html)
+- **Online Version**: [📖 GitHub Pages Presentation](https://kernel236.github.io/word-predictor/word-predictor-pitch.html#1)
 - **Format**: ioslides with custom CSS for professional appearance
 - **Features**: Real screenshots, performance graphs, and interactive elements
 
@@ -167,7 +180,7 @@ The project includes a **professional 5-slide presentation** suitable for capsto
 - **Script**: `R/eda.R`
 - **Report**: `reports/eda.Rmd` → `docs/index.html`
 - **Purpose**: Statistical analysis, Zipf's law validation, coverage optimization
-- **Output**: [📊 EDA Report](https://kernel236.github.io/word-predictor/)
+- **Output**: [📊 EDA Report](https://kernel236.github.io/word-predictor/) (GitHub Pages)
 
 ### Phase 2: Model Building ✅
 - **Script**: `R/build_lang_model.R`
@@ -194,6 +207,10 @@ The project includes a **professional 5-slide presentation** suitable for capsto
 - **Publishing**: GitHub Pages integration for online access
 
 ## 🚀 Quick Start
+
+### 🌐 Try Online (No Installation Required)
+- **🔮 Interactive App**: [kernel236.shinyapps.io/word-predictor-app](https://kernel236.shinyapps.io/word-predictor-app/)
+- **🎓 Academic Presentation**: [kernel236.github.io/word-predictor/word-predictor-pitch.html](https://kernel236.github.io/word-predictor/word-predictor-pitch.html#1)
 
 ### Prerequisites
 ```bash
