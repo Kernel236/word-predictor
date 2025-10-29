@@ -509,6 +509,45 @@ img {
   margin: 0 0 5px 0 !important;
 }
 
+/* GitHub footer styles */
+.github-footer {
+  background: linear-gradient(135deg, #24292e, #0d1117);
+  color: white;
+  padding: 15px;
+  border-radius: 8px;
+  margin-top: 15px;
+  text-align: center;
+  border: 2px solid #30363d;
+}
+
+.github-footer h3 {
+  color: #58a6ff !important;
+  font-size: 14px !important;
+  margin: 0 0 10px 0 !important;
+}
+
+.github-link {
+  font-size: 13px;
+  font-weight: 600;
+}
+
+.github-link a {
+  color: #58a6ff !important;
+  text-decoration: none;
+  border-bottom: 1px dotted #58a6ff;
+}
+
+.github-link a:hover {
+  color: #79c0ff !important;
+  border-bottom: 1px solid #79c0ff;
+}
+
+.github-icon {
+  font-size: 1.2em;
+  margin-right: 8px;
+  vertical-align: middle;
+}
+
 /* Print styles */
 @media print {
   .reveal {

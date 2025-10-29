@@ -281,5 +281,14 @@ knitr::include_graphics("ScreenshoyCyberpunktheme.png")
 </div>
 </div>
 </div>
+
+<div class="github-footer">
+### **📂 Source Code & Documentation**
+<div class="github-link">
+<span class="github-icon">🐙</span>
+**GitHub:** [github.com/Kernel236/word-predictor](https://github.com/Kernel236/word-predictor)
+</div>
+</div>
+
 </div>
 
