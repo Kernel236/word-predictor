@@ -56,6 +56,11 @@ app/output/
 app/logs/
 app/*.rds
 
+# ---- Shinyapps.io deployment ----
+rsconnect/
+*/rsconnect/
+word-predictor-app/rsconnect/
+
 # ---- Markdown / Quarto intermediates ----
 *_cache/
 *.utf8.md
