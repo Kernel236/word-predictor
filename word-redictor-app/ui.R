@@ -98,7 +98,7 @@ ui <- navbarPage(
     # Header per la tab predict
     div(class = "jumbotron",
       h1("Word Predictor"),
-      p("N-gram Language Model"),
+      p("N-gram Language Model", style = "color: white;"),
       div(
         span(class = "algo-tag", "🎯 Stupid Backoff"),
         span(class = "algo-tag", "🧮 Interpolated + IDF"),
@@ -228,7 +228,7 @@ ui <- navbarPage(
     div(class = "container-fluid",
       div(class = "jumbotron",
         h1("📚 About Word Predictor"),
-        p("Learn about the algorithms and technology behind this application")
+        p("Learn about the algorithms and technology behind this application", style = "color: white;")
       ),
       
       # Sezione Algoritmi
@@ -333,7 +333,7 @@ ui <- navbarPage(
     div(class = "container-fluid",
       div(class = "jumbotron",
         h1("ℹ️ Project Information"),
-        p("Model statistics and performance metrics")
+        p("Model statistics and performance metrics", style = "color: white;")
       ),
       
       # Statistics

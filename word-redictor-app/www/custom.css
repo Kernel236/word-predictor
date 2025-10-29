@@ -49,6 +49,33 @@ body {
   text-shadow: 0 0 8px var(--cyber-primary);
 }
 
+/* Tab attiva in modalità cyberpunk */
+.navbar-nav > .active > a,
+.navbar-nav > .active > a:hover,
+.navbar-nav > .active > a:focus {
+  color: var(--cyber-primary) !important;
+  background-color: rgba(0, 255, 136, 0.1) !important;
+  text-shadow: 0 0 12px var(--cyber-primary) !important;
+  font-weight: 700 !important;
+  border-bottom: 2px solid var(--cyber-primary) !important;
+}
+
+.navbar-nav > li > a:focus,
+.navbar-nav > li > a:active {
+  color: var(--cyber-text) !important;
+  background-color: rgba(0, 255, 136, 0.05) !important;
+}
+
+/* Navbar active tab - Cyberpunk */
+.navbar-nav > li.active > a,
+.navbar-nav > li.active > a:hover,
+.navbar-nav > li.active > a:focus {
+  background: rgba(0, 255, 136, 0.2) !important;
+  color: var(--cyber-primary) !important;
+  text-shadow: 0 0 10px var(--cyber-primary);
+  border-radius: 4px;
+}
+
 /* ===== PANNELLO CYBERPUNK ===== */
 .well {
   border-radius: 8px;
@@ -347,6 +374,549 @@ table.dataTable tbody td {
 
 ::-webkit-scrollbar-thumb:hover {
   background: linear-gradient(180deg, var(--cyber-accent), var(--cyber-secondary));
+}
+
+/* ===== CLASSIC BOOTSTRAP THEME ===== */
+body.classic-theme {
+  font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
+  background: linear-gradient(135deg, #f8f9fa 0%, #e9ecef 100%);
+  color: #495057;
+  min-height: 100vh;
+}
+
+/* Classic Navbar */
+body.classic-theme .navbar-default {
+  background: #007bff !important;
+  border-bottom: 3px solid #0056b3;
+  backdrop-filter: none;
+}
+
+body.classic-theme .navbar-brand {
+  font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif !important;
+  font-weight: 600 !important;
+  font-size: 1.5em !important;
+  color: white !important;
+  text-shadow: none;
+}
+
+body.classic-theme .navbar-nav > li > a {
+  color: white !important;
+  font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif !important;
+  font-weight: 500 !important;
+  transition: all 0.3s ease;
+}
+
+body.classic-theme .navbar-nav > li > a:hover {
+  color: #b3d7ff !important;
+  text-shadow: none;
+}
+
+body.classic-theme .navbar-nav > li > a:focus,
+body.classic-theme .navbar-nav > li > a:active {
+  color: white !important;
+  background-color: rgba(255, 255, 255, 0.1) !important;
+}
+
+/* Tab attiva in modalità classica */
+body.classic-theme .navbar-nav > .active > a,
+body.classic-theme .navbar-nav > .active > a:hover,
+body.classic-theme .navbar-nav > .active > a:focus {
+  color: white !important;
+  background-color: rgba(255, 255, 255, 0.2) !important;
+  font-weight: 600 !important;
+}
+
+/* Classic Navbar Active Tab */
+body.classic-theme .navbar-nav > li.active > a,
+body.classic-theme .navbar-nav > li.active > a:hover,
+body.classic-theme .navbar-nav > li.active > a:focus {
+  background: rgba(255, 255, 255, 0.2) !important;
+  color: #ffffff !important;
+  text-shadow: none;
+  border-radius: 4px;
+  font-weight: 700 !important;
+}
+
+/* Classic Panels */
+body.classic-theme .well {
+  border-radius: 6px;
+  box-shadow: 0 2px 10px rgba(0, 123, 255, 0.1);
+  border: 1px solid #dee2e6;
+  background: white;
+  color: #495057;
+  position: relative;
+  overflow: visible;
+}
+
+body.classic-theme .well::before {
+  display: none;
+}
+
+body.classic-theme .well h5 {
+  color: #007bff;
+  font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+  font-weight: 600;
+  margin-bottom: 15px;
+  text-shadow: none;
+}
+
+/* Classic Buttons */
+body.classic-theme .btn-primary {
+  background: #007bff;
+  border: 1px solid #007bff;
+  border-radius: 4px;
+  padding: 12px 30px;
+  font-weight: 600;
+  font-size: 1em;
+  font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+  color: white;
+  transition: all 0.2s ease;
+  box-shadow: 0 2px 4px rgba(0, 123, 255, 0.2);
+  text-transform: none;
+  letter-spacing: normal;
+}
+
+body.classic-theme .btn-primary:hover {
+  transform: none;
+  box-shadow: 0 4px 8px rgba(0, 123, 255, 0.3);
+  background: #0056b3;
+  color: white;
+  border-color: #0056b3;
+}
+
+body.classic-theme .btn-primary:active {
+  transform: none;
+  box-shadow: inset 0 2px 4px rgba(0, 0, 0, 0.1);
+}
+
+/* Classic Secondary Button (Theme Toggle) */
+body.classic-theme .btn-secondary {
+  background: #6c757d;
+  border: 1px solid #6c757d;
+  border-radius: 4px;
+  padding: 8px 20px;
+  font-weight: 500;
+  font-size: 0.9em;
+  font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+  color: white;
+  transition: all 0.2s ease;
+  box-shadow: 0 1px 3px rgba(108, 117, 125, 0.2);
+  text-transform: none;
+  letter-spacing: normal;
+}
+
+body.classic-theme .btn-secondary:hover {
+  background: #5a6268;
+  border-color: #5a6268;
+  color: white;
+  transform: none;
+  box-shadow: 0 2px 5px rgba(108, 117, 125, 0.3);
+}
+
+body.classic-theme .btn-secondary:active {
+  background: #4e555b;
+  border-color: #4e555b;
+  box-shadow: inset 0 2px 4px rgba(0, 0, 0, 0.1);
+}
+
+/* Classic Form Controls */
+body.classic-theme .form-control {
+  border-radius: 4px;
+  border: 1px solid #ced4da;
+  background: white;
+  color: #495057;
+  font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+  transition: all 0.2s ease;
+  box-shadow: inset 0 1px 2px rgba(0, 0, 0, 0.075);
+}
+
+body.classic-theme .form-control:focus {
+  border-color: #80bdff;
+  box-shadow: 0 0 0 0.2rem rgba(0, 123, 255, 0.25);
+  background: white;
+  color: #495057;
+}
+
+body.classic-theme .form-control::placeholder {
+  color: #6c757d;
+}
+
+/* Classic Labels */
+body.classic-theme .form-group label {
+  color: #495057 !important;
+  font-weight: 600 !important;
+  font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif !important;
+  text-shadow: none;
+}
+
+body.classic-theme .radio label,
+body.classic-theme .checkbox label {
+  color: #495057 !important;
+  font-weight: 400 !important;
+  font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif !important;
+}
+
+/* Classic Info Cards */
+body.classic-theme .info-card {
+  background: white;
+  border-radius: 6px;
+  padding: 20px;
+  margin: 15px 0;
+  box-shadow: 0 2px 10px rgba(0, 123, 255, 0.1);
+  border: 1px solid #dee2e6;
+  border-left: 4px solid #007bff;
+  transition: all 0.3s ease;
+  position: relative;
+  overflow: visible;
+}
+
+body.classic-theme .info-card::before {
+  display: none;
+}
+
+body.classic-theme .info-card:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 4px 15px rgba(0, 123, 255, 0.15);
+  border-color: #dee2e6;
+  border-left-color: #0056b3;
+}
+
+body.classic-theme .info-card h4,
+body.classic-theme .info-card h5 {
+  color: #007bff;
+  font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+  font-weight: 600;
+  margin-bottom: 15px;
+  text-shadow: none;
+}
+
+/* Classic Jumbotron */
+body.classic-theme .jumbotron {
+  background: linear-gradient(135deg, #007bff 0%, #0056b3 100%);
+  color: white;
+  border: none;
+  border-radius: 6px;
+  margin-bottom: 30px;
+  text-align: center;
+  padding: 40px;
+  box-shadow: 0 4px 15px rgba(0, 123, 255, 0.3);
+  position: relative;
+  overflow: hidden;
+}
+
+body.classic-theme .jumbotron::before {
+  display: none;
+}
+
+body.classic-theme .jumbotron h1 {
+  font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+  font-weight: 700;
+  color: white !important;
+  text-shadow: 0 2px 4px rgba(0, 0, 0, 0.3);
+  margin-bottom: 20px;
+}
+
+/* Classic Jumbotron Paragraphs */
+body.classic-theme .jumbotron p {
+  color: white !important;
+  font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif !important;
+  opacity: 0.9;
+  text-shadow: 0 1px 2px rgba(0, 0, 0, 0.2);
+}
+
+body.classic-theme .algo-tag {
+  display: inline-block;
+  padding: 8px 16px;
+  margin: 5px;
+  border-radius: 4px;
+  font-size: 0.9em;
+  font-weight: 600;
+  font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+  color: white !important;
+  background: rgba(255, 255, 255, 0.2);
+  border: 1px solid rgba(255, 255, 255, 0.3);
+  text-transform: none;
+  letter-spacing: normal;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+}
+
+/* Classic Jumbotron - All text elements */
+body.classic-theme .jumbotron * {
+  color: white !important;
+}
+
+body.classic-theme .jumbotron .algo-tag {
+  color: white !important;
+  background: rgba(255, 255, 255, 0.25) !important;
+  border: 1px solid rgba(255, 255, 255, 0.4) !important;
+}
+
+/* Classic Data Tables */
+body.classic-theme .dataTables_wrapper {
+  border-radius: 6px;
+  overflow: hidden;
+  box-shadow: 0 2px 10px rgba(0, 123, 255, 0.1);
+  background: white;
+  border: 1px solid #dee2e6;
+}
+
+body.classic-theme .dataTables_wrapper .dataTables_length,
+body.classic-theme .dataTables_wrapper .dataTables_filter,
+body.classic-theme .dataTables_wrapper .dataTables_info,
+body.classic-theme .dataTables_wrapper .dataTables_paginate {
+  color: #495057 !important;
+  font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif !important;
+}
+
+body.classic-theme .dataTables_wrapper .dataTables_filter input {
+  background: white !important;
+  border: 1px solid #ced4da !important;
+  color: #495057 !important;
+  border-radius: 4px !important;
+}
+
+body.classic-theme table.dataTable thead th {
+  background: #f8f9fa !important;
+  color: #495057 !important;
+  border-bottom: 2px solid #dee2e6 !important;
+  font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif !important;
+  font-weight: 600 !important;
+  text-shadow: none;
+}
+
+body.classic-theme table.dataTable tbody tr {
+  background: white !important;
+  color: #495057 !important;
+  font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif !important;
+}
+
+body.classic-theme table.dataTable tbody tr:hover {
+  background: #f8f9fa !important;
+  box-shadow: none !important;
+}
+
+body.classic-theme table.dataTable tbody td {
+  border-top: 1px solid #dee2e6 !important;
+}
+
+/* Classic About & Info Pages */
+body.classic-theme .algo-card {
+  background: white;
+  border-radius: 6px;
+  padding: 30px;
+  margin: 20px 0;
+  box-shadow: 0 2px 10px rgba(0, 123, 255, 0.1);
+  border: 1px solid #dee2e6;
+  border-left: 4px solid #007bff;
+  transition: all 0.3s ease;
+  color: #495057;
+}
+
+body.classic-theme .algo-card:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 4px 15px rgba(0, 123, 255, 0.15);
+}
+
+body.classic-theme .algo-card h3 {
+  color: #007bff;
+  font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+  text-shadow: none;
+  font-weight: 600;
+}
+
+body.classic-theme .algo-card h4,
+body.classic-theme .algo-card h5 {
+  color: #007bff;
+  font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+  text-shadow: none;
+  font-weight: 600;
+}
+
+body.classic-theme .algo-card p,
+body.classic-theme .algo-card li {
+  color: #495057;
+  font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+  line-height: 1.6;
+}
+
+body.classic-theme .algo-card strong {
+  color: #007bff;
+}
+
+/* Classic GitHub Links */
+body.classic-theme .github-link {
+  color: #007bff;
+  text-decoration: none;
+  font-size: 1.2em;
+  font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+  transition: all 0.3s ease;
+}
+
+body.classic-theme .github-link:hover {
+  color: #0056b3;
+  text-shadow: none;
+  text-decoration: underline;
+}
+
+/* Classic Container */
+body.classic-theme .container-fluid {
+  color: #495057;
+}
+
+/* Classic HR elements */
+body.classic-theme hr {
+  border-color: #dee2e6;
+}
+
+/* Classic Footer Info */
+body.classic-theme .footer-info {
+  background: #f8f9fa;
+  color: #495057;
+  padding: 20px;
+  border-radius: 6px;
+  margin-top: 30px;
+  text-align: center;
+  border: 1px solid #dee2e6;
+}
+
+/* Classic Statistics Numbers */
+body.classic-theme h2[style*="color: #667eea"] {
+  color: #007bff !important;
+}
+
+/* Classic Text Colors */
+body.classic-theme .container-fluid p,
+body.classic-theme .container-fluid h4,
+body.classic-theme .container-fluid h5 {
+  color: #495057 !important;
+}
+
+/* Classic Images */
+body.classic-theme img {
+  border: 1px solid #dee2e6;
+  box-shadow: 0 2px 8px rgba(0, 123, 255, 0.1) !important;
+}
+
+/* Classic Prediction Results Section */
+body.classic-theme .info-card h6 {
+  color: #495057 !important;
+  font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif !important;
+  font-weight: 600 !important;
+  text-shadow: none !important;
+}
+
+body.classic-theme .info-card .algo-tag {
+  background: #007bff !important;
+  color: white !important;
+  border: 1px solid #007bff !important;
+  box-shadow: 0 2px 4px rgba(0, 123, 255, 0.2) !important;
+  font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif !important;
+}
+
+/* Classic Fluidrow Column Centers */
+body.classic-theme .text-center h6 {
+  color: #495057 !important;
+  font-weight: 600 !important;
+}
+
+body.classic-theme .text-center span.algo-tag {
+  background: #007bff !important;
+  color: white !important;
+}
+
+/* Classic Prediction Results Section */
+body.classic-theme .info-card h6 {
+  color: #6c757d !important;
+  font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif !important;
+  font-weight: 600 !important;
+  text-shadow: none;
+  margin-bottom: 8px;
+}
+
+body.classic-theme .info-card .algo-tag {
+  background: #007bff !important;
+  color: white !important;
+  border: 1px solid #007bff !important;
+  box-shadow: 0 2px 4px rgba(0, 123, 255, 0.2) !important;
+  font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif !important;
+}
+
+/* Classic Text Center Divs */
+body.classic-theme .text-center h6,
+body.classic-theme .text-center p {
+  color: #495057 !important;
+}
+
+/* Classic Prediction Results Section */
+body.classic-theme .info-card h6 {
+  color: #495057 !important;
+  font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif !important;
+  font-weight: 600 !important;
+  margin-bottom: 8px !important;
+}
+
+body.classic-theme .info-card .algo-tag {
+  display: inline-block;
+  padding: 6px 12px;
+  margin: 3px;
+  border-radius: 4px;
+  font-size: 0.85em;
+  font-weight: 600;
+  font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif !important;
+  color: white !important;
+  background: #007bff !important;
+  border: 1px solid #007bff !important;
+  text-transform: none !important;
+  letter-spacing: normal !important;
+  box-shadow: 0 2px 4px rgba(0, 123, 255, 0.2) !important;
+}
+
+body.classic-theme .info-card .text-center {
+  color: #495057 !important;
+}
+
+/* Classic Algorithm Tags Variants */
+body.classic-theme .algo-backoff {
+  background: #6c757d !important;
+  color: white !important;
+}
+
+body.classic-theme .algo-interpolated {
+  background: #17a2b8 !important;
+  color: white !important;
+}
+
+/* Classic Verbatim Output */
+body.classic-theme pre {
+  background: #f8f9fa !important;
+  color: #495057 !important;
+  border: 1px solid #dee2e6 !important;
+  border-radius: 4px !important;
+  font-family: 'Courier New', monospace !important;
+  padding: 12px !important;
+  margin: 10px 0 !important;
+}
+
+/* Classic Status Text */
+body.classic-theme #status_text,
+body.classic-theme #timing_text {
+  color: #495057 !important;
+  font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif !important;
+}
+
+/* Classic All Text Elements in Info Cards */
+body.classic-theme .info-card * {
+  color: #495057 !important;
+}
+
+body.classic-theme .info-card h4,
+body.classic-theme .info-card h5,
+body.classic-theme .info-card h6 {
+  color: #007bff !important;
+}
+
+body.classic-theme .info-card .algo-tag {
+  color: white !important;
 }
 
 /* ===== RESPONSIVITÀ ===== */
