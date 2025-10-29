@@ -158,7 +158,14 @@ ui <- navbarPage(
       actionButton("predict_btn", "🚀 Predict", 
                   class = "btn-primary btn-lg btn-block"),
       
-      br(), br(),
+      br(),
+      
+      # Theme Toggle Button
+      actionButton("dark-mode-toggle", "🌌 Cyber Mode", 
+                  class = "btn btn-secondary btn-sm btn-block",
+                  style = "margin-top: 10px;"),
+      
+      br(),
       
       # Status
       div(class = "well",

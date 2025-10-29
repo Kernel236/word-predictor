@@ -2,6 +2,9 @@
 
 $(document).ready(function() {
   
+  // ===== SET DEFAULT CLASSIC THEME =====
+  $('body').addClass('classic-theme');
+  
   // ===== CYBER BUTTON EFFECTS =====
   $('.btn-primary').hover(
     function() {
@@ -86,14 +89,14 @@ $(document).ready(function() {
   // ===== EASTER EGG - KONAMI CODE =====
   var konamiCode = [38, 38, 40, 40, 37, 39, 37, 39, 66, 65];
   var konamiIndex = 0;
+  var rainbowTimer = null;
   
   $(document).keydown(function(e) {
     if (e.keyCode === konamiCode[konamiIndex]) {
       konamiIndex++;
       if (konamiIndex === konamiCode.length) {
         // Easter egg attivato!
-        $('body').addClass('rainbow-mode');
-        alert('🎉 Easter Egg Unlocked! Rainbow Mode Activated!');
+        activateRainbowMode();
         konamiIndex = 0;
       }
     } else {
@@ -101,12 +104,86 @@ $(document).ready(function() {
     }
   });
   
-  // ===== DARK MODE TOGGLE (BONUS) =====
+  function activateRainbowMode() {
+    // Clear any existing timer
+    if (rainbowTimer) clearTimeout(rainbowTimer);
+    
+    // Activate rainbow mode
+    $('body').addClass('rainbow-mode');
+    
+    // Show spectacular notification
+    showRainbowNotification();
+    
+    // Auto-disable after 6 seconds
+    rainbowTimer = setTimeout(function() {
+      $('body').removeClass('rainbow-mode');
+      showThemeNotification('🌈 Rainbow Mode Deactivated');
+    }, 6000);
+  }
+  
+  function showRainbowNotification() {
+    // Remove existing notifications
+    $('.rainbow-notification').remove();
+    
+    // Create rainbow notification with special styling
+    $('body').append(
+      '<div class="rainbow-notification" style="position: fixed; top: 50%; left: 50%; transform: translate(-50%, -50%); ' +
+      'z-index: 1002; opacity: 0; background: linear-gradient(45deg, #ff6b6b, #4ecdc4, #45b7d1, #96ceb4, #ffa726); ' +
+      'background-size: 300% 300%; animation: rainbow-bg 2s ease infinite; color: white; padding: 30px 40px; ' +
+      'border-radius: 15px; font-weight: bold; font-size: 1.5em; text-align: center; ' +
+      'box-shadow: 0 8px 25px rgba(0, 0, 0, 0.3); border: 3px solid white;">' +
+      '<div style="font-size: 2em; margin-bottom: 10px;">🎉🌈✨</div>' +
+      '<div>EASTER EGG UNLOCKED!</div>' +
+      '<div style="font-size: 0.8em; margin-top: 10px; opacity: 0.9;">Rainbow Mode Activated!</div>' +
+      '</div>'
+    );
+    
+    // Animate the notification
+    $('.rainbow-notification').animate({opacity: 1}, 500).delay(3000).animate({opacity: 0}, 500, function() {
+      $(this).remove();
+    });
+  }
+  
+  // ===== THEME TOGGLE (CYBERPUNK ↔ CLASSIC) =====
   if ($('#dark-mode-toggle').length) {
     $('#dark-mode-toggle').click(function() {
-      $('body').toggleClass('dark-mode');
-      var isDark = $('body').hasClass('dark-mode');
-      $(this).text(isDark ? '☀️ Light Mode' : '🌙 Dark Mode');
+      $('body').toggleClass('classic-theme');
+      var isClassic = $('body').hasClass('classic-theme');
+      
+      // Aggiorna il testo del bottone
+      $(this).html(isClassic ? '🌌 Cyber Mode' : '🌙 Classic Mode');
+      
+      // Animazione smooth di transizione
+      $('body').css('transition', 'all 0.5s ease');
+      
+      // Feedback visivo
+      var message = isClassic ? '🏛️ Classic Bootstrap Theme Active!' : '🌌 Cyberpunk Theme Active!';
+      showThemeNotification(message);
+      
+      // Remove transition after animation
+      setTimeout(function() {
+        $('body').css('transition', '');
+      }, 500);
+    });
+  }
+  
+  // ===== THEME NOTIFICATION =====
+  function showThemeNotification(message) {
+    // Remove existing notifications
+    $('.theme-notification').remove();
+    
+    // Crea notification
+    $('body').append(
+      '<div class="theme-notification" style="position: fixed; top: 70px; right: 20px; z-index: 1001; opacity: 0; ' +
+      'background: linear-gradient(45deg, #007bff, #0056b3); color: white; padding: 15px 25px; ' +
+      'border-radius: 8px; font-weight: bold; box-shadow: 0 4px 15px rgba(0, 123, 255, 0.3);">' +
+      message +
+      '</div>'
+    );
+    
+    // Anima la notifica
+    $('.theme-notification').animate({opacity: 1}, 300).delay(2500).animate({opacity: 0}, 300, function() {
+      $(this).remove();
     });
   }
   
