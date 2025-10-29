@@ -25,7 +25,7 @@ This project implements a **next-word prediction model** based on statistical n-
 ```
 word-predictor/
 ├── README.md                          # Main project documentation
-├── .gitignore                        # Git ignore rules  
+├── .gitignore                        # Git ignore rules (includes rsconnect/)
 ├── data/
 │   ├── raw/                          # SwiftKey corpora (git-ignored)
 │   │   ├── en_US.blogs.txt           # English blogs (~200MB)
@@ -41,23 +41,41 @@ word-predictor/
 │   ├── eda.R                         # Exploratory data analysis
 │   ├── build_lang_model.R            # Model construction pipeline
 │   ├── predict_demo.R                # CLI prediction demo
-│   └── run-model&eval.R              # Model evaluation & benchmarking
+│   ├── run-model&eval.R              # Model evaluation & benchmarking
+│   └── run-interpolation-eval.R      # Interpolated algorithm evaluation
 ├── reports/
 │   ├── eda.Rmd                       # Research report (R Markdown)
 │   └── cache/                        # Computation cache (git-ignored)
-├── docs/
-│   └── index.html                    # Published EDA report (GitHub Pages)
+├── docs/                             # 📖 GitHub Pages (Live Demo)
+│   ├── index.html                    # Published EDA report
+│   └── word-predictor-pitch.html     # Capstone presentation
+├── presentation/                     # 🎓 Academic Presentation
+│   ├── word-predictor-pitch.Rmd      # 5-slide capstone presentation
+│   ├── custom-slides.css             # Optimized slide styling
+│   ├── mock-data.R                   # Presentation data generation
+│   ├── plot_algorithm_comparison.png # Real benchmark results
+│   ├── plot_latency_summary_long_long.png # Performance metrics
+│   ├── ScreenshotClassicbootstraptheme.png # App screenshots
+│   └── ScreenshoyCyberpunktheme.png  # Theme demonstrations
 ├── results/                          # Performance evaluation data
-│   ├── hit_breakdown_*.csv           # Prediction accuracy by rank
-│   ├── timing_summary_*.csv          # Performance benchmarks
-│   └── plot_*.png                    # Visualization outputs
-├── word-redictor-app/               # 🔮 Interactive Shiny Application
+│   ├── plot_accuracy_at_k_*.png      # Accuracy visualizations
+│   ├── plot_algorithm_comparison.png # Algorithm benchmarks
+│   ├── plot_latency_summary_*.png    # Performance analysis
+│   └── plot_rank_hit_distribution_*.png # Prediction distributions
+├── word-predictor-app/              # 🔮 Interactive Shiny Application
 │   ├── README.md                     # App-specific documentation
-│   ├── ui.R                          # Cyberpunk-themed interface
+│   ├── ui.R                          # Dual-theme interface (Classic/Cyberpunk)
 │   ├── server.R                      # Prediction server logic  
-│   ├── utils.R                       # Core algorithm functions
+│   ├── utils.R                       # Core algorithm functions (path-aware)
 │   ├── run_app.R                     # Launch script
-│   └── www/                          # Web assets (CSS, JS)
+│   ├── .Rprofile                     # Shinyapps.io deployment config
+│   ├── uni_lookup.rds                # Model files (deployment copies)
+│   ├── bi_pruned.rds                 # Bigram model (for shinyapps.io)
+│   ├── tri_pruned.rds                # Trigram model (for shinyapps.io)
+│   └── www/                          # Web assets & visualizations
+│       ├── custom.css                # Dual-theme styling system
+│       ├── custom.js                 # Theme toggle & Easter eggs
+│       └── plot_*.png                # Performance graphs (copied)
 └── word-predictor.Rproj             # RStudio project (git-ignored)
 ```
 
@@ -93,14 +111,23 @@ word-predictor/
 
 ## 🔮 Interactive Application
 
-The project culminates in a **cyberpunk-themed Shiny application** with dual prediction algorithms:
+The project culminates in a **dual-theme Shiny application** with advanced prediction algorithms and interactive features:
 
 ### 🚀 Live Demo Features
 - 🎯 **Real-time Predictions**: Instant word suggestions as you type
 - 🧠 **Dual Algorithm Modes**: Stupid Backoff vs. Interpolated+IDF
 - 📊 **Performance Metrics**: Live timing and accuracy statistics
-- 🎨 **Cyberpunk UI**: Custom CSS with neon aesthetics and animations
+- 🎨 **Dual Theme System**: Classic Bootstrap + Cyberpunk mode with smooth transitions
 - ⚙️ **Tunable Parameters**: Alpha penalties, lambda weights, and more
+- 🎮 **Easter Eggs**: Hidden Konami code for special effects
+- 📱 **Responsive Design**: Works on desktop and mobile devices
+
+### 🎨 Theme Features
+| Theme | Style | Features |
+|-------|-------|----------|
+| **Classic** | Professional Bootstrap | Clean, accessible, business-ready |
+| **Cyberpunk** | Neon + Dark | Futuristic aesthetics, glow effects, animations |
+| **Rainbow Mode** | Special Effect | 6-second rainbow animation (Easter egg) |
 
 ### 📈 Performance Metrics
 | Metric | Stupid Backoff | Interpolated+IDF |
@@ -110,6 +137,29 @@ The project culminates in a **cyberpunk-themed Shiny application** with dual pre
 | **Accuracy Mode** | Fast & Efficient | Research-grade |
 
 > 📋 **Full app documentation**: [word-redictor-app/README.md](word-redictor-app/README.md)
+
+## 🎓 Academic Presentation
+
+The project includes a **professional 5-slide presentation** suitable for capstone project submissions and academic conferences:
+
+### 📑 Presentation Structure
+1. **Project Overview** - Problem statement and methodology
+2. **N-gram Language Model** - Technical approach and algorithms  
+3. **Performance Analysis** - Real benchmark results and timing data
+4. **Interactive Demo** - Application features and screenshots
+5. **Custom Rcaptext Package** - Technical contributions and GitHub link
+
+### 🌐 Live Presentation
+- **Location**: [`presentation/word-predictor-pitch.Rmd`](presentation/word-predictor-pitch.Rmd)
+- **Online Version**: [GitHub Pages Presentation](https://kernel236.github.io/word-predictor/word-predictor-pitch.html)
+- **Format**: ioslides with custom CSS for professional appearance
+- **Features**: Real screenshots, performance graphs, and interactive elements
+
+### 📊 Presentation Assets
+- **Real Screenshots**: Both Classic and Cyberpunk themes
+- **Performance Graphs**: Actual benchmark results from model evaluation
+- **Model Statistics**: N-gram distribution and efficiency metrics
+- **GitHub Integration**: Direct links to source code and documentation
 
 ## 🔄 Project Workflow
 
@@ -132,10 +182,16 @@ The project culminates in a **cyberpunk-themed Shiny application** with dual pre
 - **Evaluation**: Comprehensive benchmarking with visualizations
 
 ### Phase 4: Interactive Application ✅
-- **Location**: `word-redictor-app/`
-- **Features**: Dual algorithm modes, cyberpunk UI, real-time metrics
-- **Access**: Web interface with auto-launch capabilities
+- **Location**: `word-predictor-app/`
+- **Features**: Dual-theme system, dual algorithm modes, real-time metrics
+- **Deployment**: Local development + shinyapps.io production ready
 - **Tech Stack**: Shiny + custom CSS/JS + Rcaptext engine
+
+### Phase 5: Academic Presentation ✅
+- **Location**: `presentation/word-predictor-pitch.Rmd`
+- **Format**: Professional 5-slide ioslides presentation
+- **Content**: Real data, screenshots, performance benchmarks
+- **Publishing**: GitHub Pages integration for online access
 
 ## 🚀 Quick Start
 
@@ -170,20 +226,36 @@ source("R/predict_demo.R")
 source("R/run-model&eval.R")
 
 # 5. Launch interactive app
-setwd("word-redictor-app")
+setwd("word-predictor-app")
 source("run_app.R")  # Opens at http://localhost:8080
+
+# 6. Generate academic presentation
+setwd("../presentation")
+rmarkdown::render("word-predictor-pitch.Rmd")
 ```
 
 ### Quick App Launch
 ```bash
 # Navigate to app directory
-cd word-redictor-app/
+cd word-predictor-app/
 
 # Launch with default settings
 Rscript run_app.R
 
 # Or with custom port
 Rscript run_app.R 3838
+```
+
+### Quick Presentation Build
+```bash
+# Navigate to presentation directory
+cd presentation/
+
+# Render presentation to HTML
+Rscript -e "rmarkdown::render('word-predictor-pitch.Rmd')"
+
+# Open in browser (Linux/Mac)
+open word-predictor-pitch.html
 ```
 
 ## ⚙️ Technical Dependencies
@@ -203,6 +275,7 @@ library(knitr)     # 📖 Report generation
 - 📊 **R Version**: 4.0+ recommended
 - 📚 **Data**: English US text corpora (included in raw data)
 - 💾 **Storage**: ~500MB for processed frequency tables
+- 🌐 **Deployment**: Model files duplicated in app/ for shinyapps.io compatibility
 
 ## � Rcaptext Package: Custom Text Processing Engine
 
@@ -317,6 +390,6 @@ This project is developed for educational and research purposes. Please respect 
 
 ---
 
-*Last Updated: October 2025 | Project Status: 🟢 Active Development*
+*Last Updated: October 29, 2025 | Project Status: 🟢 Complete & Deployed*
 
 </div>
