@@ -20,7 +20,6 @@
 
 # ---- Data (raw and processed) ----
 data/raw/
-data/processed/
 data/interim/
 data/temp/
 *.rds

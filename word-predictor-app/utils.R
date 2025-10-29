@@ -8,9 +8,20 @@ load_data <- function() {
   cat("📥 Loading prediction models...\n")
   start_time <- Sys.time()
   
-  UNI_PATH <- "../data/processed/uni_lookup.rds"
-  BI_PATH  <- "../data/processed/bi_pruned.rds"
-  TRI_PATH <- "../data/processed/tri_pruned.rds"
+  # Path relativi che funzionano sia in locale che su shinyapps.io
+  if (file.exists("../data/processed/uni_lookup.rds")) {
+    # Locale - path relativi
+    UNI_PATH <- "../data/processed/uni_lookup.rds"
+    BI_PATH  <- "../data/processed/bi_pruned.rds"
+    TRI_PATH <- "../data/processed/tri_pruned.rds"
+    cat("🏠 Running locally - using relative paths\n")
+  } else {
+    # Shinyapps.io - file nella cartella dell'app
+    UNI_PATH <- "uni_lookup.rds"
+    BI_PATH  <- "bi_pruned.rds"
+    TRI_PATH <- "tri_pruned.rds"
+    cat("☁️ Running on server - using local files\n")
+  }
   
   data <- list(
     uni_lookup = readRDS(UNI_PATH),
